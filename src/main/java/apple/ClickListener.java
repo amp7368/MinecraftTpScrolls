@@ -24,7 +24,9 @@ public class ClickListener implements Listener {
 
         // if the action is a right click
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            if (Objects.requireNonNull(Objects.requireNonNull(event.getItem()).getData()).getItemType() == Material.PAPER) {
+
+            Bukkit.getServer().broadcastMessage("you right clicked!");
+            if (Objects.requireNonNull(event.getItem()).getType() == Material.PAPER) {
                 Bukkit.getServer().broadcastMessage("you right clicked paper!");
             }
             return;
