@@ -55,11 +55,10 @@ public class DuplicateCommand implements CommandExecutor {
         String xString = lore.get(0).substring(2);
         String yString = lore.get(1).substring(2);
         String zString = lore.get(2).substring(2);
-        int x, y, z;
         try {
-            x = Integer.parseInt(xString);
-            y = Integer.parseInt(yString);
-            z = Integer.parseInt(zString);
+            Integer.parseInt(xString);
+            Integer.parseInt(yString);
+            Integer.parseInt(zString);
         } catch (NumberFormatException e) {
             // coords aren't numbers
             player.sendMessage(ClickListener.IMPROPER_FORMAT_MESSAGE);

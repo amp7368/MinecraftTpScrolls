@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -12,12 +13,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ClickListener implements Listener {
     JavaPlugin plugin;
     private final static int DISTANCE_MARGIN = 5;
     final static String IMPROPER_FORMAT_MESSAGE = "I can't read the language on this scroll..";
+    HashMap<String, Long> lastAttemptedScroll = new HashMap<String, Long>();
 
     public ClickListener(ScrollMain plugin) {
         this.plugin = plugin;
@@ -27,7 +30,15 @@ public class ClickListener implements Listener {
     @EventHandler
     public void rightClickListener(PlayerInteractEvent event) {
         Action action = event.getAction();
-
+        String playerName = event.getPlayer().getName();
+        if (lastAttemptedScroll.containsKey(playerName)) {
+            if (lastAttemptedScroll.get(playerName) > System.currentTimeMillis() - 2000) {
+                // don't spam!
+                return;
+            } else {
+                lastAttemptedScroll.remove(playerName);
+            }
+        }
         // if the action is a right click
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getItem();
@@ -36,6 +47,8 @@ public class ClickListener implements Listener {
             }
             // if the item in hand is paper
             if (item.getType() == Material.PAPER) {
+                lastAttemptedScroll.put(playerName, System.currentTimeMillis());
+
                 // get the lore for the item
                 ItemMeta meta = item.getItemMeta();
                 if (meta == null)
