@@ -3,6 +3,7 @@ package apple;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,12 +27,12 @@ public class CreateCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
-        Player player = Bukkit.getServer().getPlayer(commandSender.getName());
+        Player player = Bukkit.getPlayer(commandSender.getName());
         if (player == null) {
             return true;
         }
         if (args.length == 0) {
-            //TODO DISPLAY ERROR MESSAGE
+            commandSender.sendMessage("Correct Usage: /scrollCreate <name>");
             return true;
         }
         String itemName = args[0];
@@ -45,20 +46,23 @@ public class CreateCommand implements CommandExecutor {
 
             // get the player location
             Location loc = player.getLocation();
-            List<String> coords = new ArrayList<String>(3);
+            List<String> coords = new ArrayList<String>(4);
             coords.add("x:" + loc.getBlockX());
             coords.add("y:" + loc.getBlockY());
             coords.add("z:" + loc.getBlockZ());
+            World w = loc.getWorld();
+            if (w == null) {
+                commandSender.sendMessage("Something went wrong >.>");
+                return true;
+            }
+            coords.add("world:" + w.getName());
 
             // set the meta data
             meta.setLore(coords);
             meta.setDisplayName(itemName);
-            meta.setCustomModelData(0); // todo remove me maybe
             scroll.setItemMeta(meta);
 
             player.getInventory().setItemInMainHand(scroll);
-        } else {
-            Bukkit.getServer().broadcastMessage("main hand is " + mainHand.getData());
         }
         return false;
     }
