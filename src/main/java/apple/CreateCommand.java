@@ -46,8 +46,9 @@ public class CreateCommand implements CommandExecutor {
             // create a scroll
             ItemStack scroll = new ItemStack(Material.PAPER, 64);
             ItemMeta meta = scroll.getItemMeta();
-            assert meta != null;
-
+            if(meta == null)
+                return true;
+            meta.setCustomModelData(0);
             // get the player location
             Location loc = player.getLocation();
             List<String> coords = new ArrayList<String>(4);
@@ -67,6 +68,8 @@ public class CreateCommand implements CommandExecutor {
             scroll.setItemMeta(meta);
 
             player.getInventory().setItemInMainHand(scroll);
+        }else{
+            commandSender.sendMessage("My hands are full right now!");
         }
         return false;
     }
