@@ -21,9 +21,9 @@ public class CreateCommand implements CommandExecutor {
 
     public CreateCommand(ScrollMain plugin) {
         this.plugin = plugin;
-        PluginCommand command = plugin.getCommand("scrollCreate");
+        PluginCommand command = plugin.getCommand("scroll create");
         if (command == null) {
-            System.out.println("ScrollsTp could not get the scrollCreate command");
+            System.out.println("ScrollsTp could not get the scroll_create command");
             return;
         }
         command.setExecutor(this);
@@ -35,8 +35,8 @@ public class CreateCommand implements CommandExecutor {
         if (player == null) {
             return true;
         }
-        if (args.length == 0) {
-            commandSender.sendMessage("Correct Usage: /scrollCreate <name>");
+        if (args.length != 2) {
+            commandSender.sendMessage("Correct Usage: /scroll_create <name>");
             return true;
         }
         String itemName = args[0];
