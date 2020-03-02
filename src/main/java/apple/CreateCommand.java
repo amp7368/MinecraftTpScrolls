@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,14 +15,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class CreateCommand implements CommandExecutor {
     JavaPlugin plugin;
 
     public CreateCommand(ScrollMain plugin) {
         this.plugin = plugin;
-        Objects.requireNonNull(plugin.getCommand("scrollCreate")).setExecutor(this);
+        PluginCommand command = plugin.getCommand("scrollCreate");
+        if (command == null) {
+            System.out.println("ScrollsTp could not get the scrollCreate command");
+            return;
+        }
+        command.setExecutor(this);
     }
 
     @Override
