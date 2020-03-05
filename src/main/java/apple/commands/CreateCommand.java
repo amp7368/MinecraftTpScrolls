@@ -1,6 +1,6 @@
 package apple.commands;
 
-import apple.MessageFinals;
+import apple.utils.MessageFinals;
 import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

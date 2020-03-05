@@ -1,4 +1,4 @@
-package apple;
+package apple.utils;
 
 public class YMLNavigate {
     public static final String INVENTORY = "inventory";

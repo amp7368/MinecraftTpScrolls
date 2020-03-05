@@ -1,6 +1,7 @@
-package apple;
+package apple.listeners;
 
-import com.mojang.brigadier.Message;
+import apple.utils.MessageFinals;
+import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

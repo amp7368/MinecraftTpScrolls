@@ -1,5 +1,7 @@
-package apple;
+package apple.listeners;
 
+import apple.ScrollInventories;
+import apple.utils.MessageFinals;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -9,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,34 +20,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class InventoryChest implements InventoryHolder, Listener {
-    private final Inventory inventory;
-
-    public InventoryChest(JavaPlugin plugin, int size, String name) {
-        inventory = Bukkit.createInventory(this, size, name);
+public class InventoryInteractListener implements Listener {
+    public InventoryInteractListener(JavaPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void put(int index, ItemStack item) {
-        inventory.setItem(index, item);
-    }
-
-    public void add(ItemStack item) {
-        inventory.addItem(item);
     }
 
     @EventHandler
     public void inventoryEvent(InventoryClickEvent event) {
-        // if this isn't my inventory, I dont care
-        if (event.getInventory().getHolder() != this) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder == null)
             return;
+        // if this isn't my inventory, I dont care
+        if (holder.equals(ScrollInventories.scrollInvAll)) {
+            dealWithAllInv(event);
         }
+    }
 
+    public void dealWithAllInv(InventoryClickEvent event) {
         HumanEntity who = event.getWhoClicked();
         // if this wasn't interacted with a player, wtf happened? best to ignore it..
         if (!(who instanceof Player)) {
