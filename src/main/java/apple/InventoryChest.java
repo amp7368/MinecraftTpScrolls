@@ -21,7 +21,7 @@ import java.util.List;
 public class InventoryChest implements InventoryHolder, Listener {
     private final Inventory inventory;
 
-    public InventoryChest(ScrollMain plugin, int size, String name) {
+    public InventoryChest(JavaPlugin plugin, int size, String name) {
         inventory = Bukkit.createInventory(this, size, name);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }

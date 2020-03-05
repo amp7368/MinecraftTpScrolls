@@ -27,6 +27,17 @@ public class ScrollCommand implements CommandExecutor {
 
     public ScrollCommand(ScrollMain plugin) {
         this.plugin = plugin;
+        update();
+
+        // set the scroll command to execute here
+        PluginCommand command = plugin.getCommand("scroll");
+        if (command == null) {
+            return;
+        }
+        command.setExecutor(this);
+    }
+
+    public void update() {
         scrollInvAll = Bukkit.createInventory(new InventoryChest(plugin, 54, "Scrolls"), InventoryType.CHEST);
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -41,17 +52,10 @@ public class ScrollCommand implements CommandExecutor {
             configInvAllItem = configInvAll.getConfigurationSection(String.format("item%d", i++));
             scrollInvAll.addItem(item);
         }
-
-
-        // set the scroll command to execute here
-        PluginCommand command = plugin.getCommand("scroll");
-        if (command == null) {
-            return;
-        }
-        command.setExecutor(this);
     }
 
     private static ItemStack getItemFromConfig(ConfigurationSection config) {
+        //todo update these vvv
         String type = config.getString("material");
         ItemStack item = new ItemStack(Material.getMaterial(type));
         List<String> lore = new ArrayList<String>(4);

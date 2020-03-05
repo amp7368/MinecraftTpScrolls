@@ -20,8 +20,10 @@ import java.util.List;
 
 public class ScrollAddAllCommand implements CommandExecutor {
     private JavaPlugin plugin;
+    private ScrollCommand scrollToUpdate;
 
-    public ScrollAddAllCommand(ScrollMain plugin) {
+    public ScrollAddAllCommand(ScrollMain plugin, ScrollCommand scrollCommand) {
+        this.scrollToUpdate = scrollCommand;
         this.plugin = plugin;
         Bukkit.getPluginCommand("scroll_add_all").setExecutor(this);
     }
@@ -85,6 +87,7 @@ public class ScrollAddAllCommand implements CommandExecutor {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        scrollToUpdate.update();
         return false;
     }
 }
