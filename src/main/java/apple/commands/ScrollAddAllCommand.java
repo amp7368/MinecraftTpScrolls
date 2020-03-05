@@ -1,5 +1,6 @@
 package apple.commands;
 
+import apple.ScrollInventories;
 import apple.ScrollMain;
 import apple.YMLNavigate;
 import org.bukkit.Bukkit;
@@ -20,16 +21,20 @@ import java.util.List;
 
 public class ScrollAddAllCommand implements CommandExecutor {
     private JavaPlugin plugin;
-    private ScrollCommand scrollToUpdate;
 
-    public ScrollAddAllCommand(ScrollMain plugin, ScrollCommand scrollCommand) {
-        this.scrollToUpdate = scrollCommand;
+    public ScrollAddAllCommand(ScrollMain plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginCommand("scroll_add_all").setExecutor(this);
+        Bukkit.getPluginCommand("scroll_edit").setExecutor(this);
     }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+        // get whatever is in the player's main hand
+        Player player = Bukkit.getPlayer(commandSender.getName());
+        if (player == null)
+            return true;
+        player.openInventory(ScrollInventories.scrollInvAllEdit);
+
         // get the yml for the contents of the inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -51,10 +56,6 @@ public class ScrollAddAllCommand implements CommandExecutor {
         if (configInvAll == null)
             return true;
 
-        // get whatever is in the player's main hand
-        Player player = Bukkit.getPlayer(commandSender.getName());
-        if (player == null)
-            return true;
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
 
         // create the item section in the yml
@@ -87,7 +88,7 @@ public class ScrollAddAllCommand implements CommandExecutor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        scrollToUpdate.update();
+        ScrollInventories.update();
         return false;
     }
 }
