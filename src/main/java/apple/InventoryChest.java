@@ -98,7 +98,7 @@ public class InventoryChest implements InventoryHolder, Listener {
                         playerInv.setItem(i, item);
                         return;
                     }
-                    player.sendMessage("I don't need to write any more of these scrolls..");
+                    player.sendMessage(MessageFinals.GET_ALREADY_HAVE);
                     break;
                 }
             }

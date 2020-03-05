@@ -1,5 +1,8 @@
 package apple;
 
+import apple.commands.CreateCommand;
+import apple.commands.DuplicateCommand;
+import apple.commands.ScrollCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ScrollMain extends JavaPlugin {

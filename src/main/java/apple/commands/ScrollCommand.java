@@ -1,5 +1,7 @@
-package apple;
+package apple.commands;
 
+import apple.InventoryChest;
+import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

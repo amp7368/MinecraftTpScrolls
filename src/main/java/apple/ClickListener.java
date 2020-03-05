@@ -1,5 +1,6 @@
 package apple;
 
+import com.mojang.brigadier.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +20,6 @@ import java.util.List;
 public class ClickListener implements Listener {
     JavaPlugin plugin;
     private final static int DISTANCE_MARGIN = 15;
-    final static String IMPROPER_FORMAT_MESSAGE = "I can't read the language on this scroll..";
     HashMap<String, Long> lastAttemptedScroll = new HashMap<String, Long>();
 
     public ClickListener(ScrollMain plugin) {
@@ -57,7 +57,7 @@ public class ClickListener implements Listener {
 
                 if (lore == null || lore.size() != 4) {
                     // improper format of lore for a scroll
-                    event.getPlayer().sendMessage("I can't read the language on this scroll..");
+                    event.getPlayer().sendMessage(MessageFinals.WRONG_SCROLL);
                     return;
                 }
                 String worldString = lore.get(3).substring(6);
@@ -65,7 +65,7 @@ public class ClickListener implements Listener {
                 world = Bukkit.getWorld(worldString);
                 if (world == null) {
                     // the world doesn't exist
-                    event.getPlayer().sendMessage(IMPROPER_FORMAT_MESSAGE);
+                    event.getPlayer().sendMessage(MessageFinals.IMPROPER_FORMAT_MESSAGE);
                 }
                 String xString = lore.get(0).substring(2);
                 String yString = lore.get(1).substring(2);
@@ -77,7 +77,7 @@ public class ClickListener implements Listener {
                     z = Integer.parseInt(zString);
                 } catch (NumberFormatException e) {
                     // coords aren't numbers
-                    event.getPlayer().sendMessage(IMPROPER_FORMAT_MESSAGE);
+                    event.getPlayer().sendMessage(MessageFinals.IMPROPER_FORMAT_MESSAGE);
                     return;
                 }
                 Location playerLoc = event.getPlayer().getLocation();
@@ -85,7 +85,7 @@ public class ClickListener implements Listener {
                 if (x - DISTANCE_MARGIN < playerLoc.getBlockX() && playerLoc.getBlockX() < x + DISTANCE_MARGIN &&
                         y - DISTANCE_MARGIN < playerLoc.getBlockY() && playerLoc.getBlockY() < y + DISTANCE_MARGIN &&
                         z - DISTANCE_MARGIN < playerLoc.getBlockZ() && playerLoc.getBlockZ() < z + DISTANCE_MARGIN) {
-                    event.getPlayer().sendMessage("I'm already here! I don't need to use a scroll..");
+                    event.getPlayer().sendMessage(MessageFinals.TP_ALREADY_HERE);
                     return;
                 }
 

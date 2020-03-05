@@ -1,5 +1,8 @@
-package apple;
+package apple.commands;
 
+import apple.ClickListener;
+import apple.MessageFinals;
+import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,7 +45,7 @@ public class DuplicateCommand implements CommandExecutor {
 
         if (lore == null || lore.size() != 4) {
             // improper format of lore for a scroll
-            player.sendMessage(ClickListener.IMPROPER_FORMAT_MESSAGE);
+            player.sendMessage(MessageFinals.IMPROPER_FORMAT_MESSAGE);
             return true;
         }
         String worldString = lore.get(3).substring(6);
@@ -50,7 +53,7 @@ public class DuplicateCommand implements CommandExecutor {
         world = Bukkit.getWorld(worldString);
         if (world == null) {
             // the world doesn't exist
-            player.sendMessage(ClickListener.IMPROPER_FORMAT_MESSAGE);
+            player.sendMessage(MessageFinals.IMPROPER_FORMAT_MESSAGE);
         }
         String xString = lore.get(0).substring(2);
         String yString = lore.get(1).substring(2);
@@ -61,12 +64,12 @@ public class DuplicateCommand implements CommandExecutor {
             Integer.parseInt(zString);
         } catch (NumberFormatException e) {
             // coords aren't numbers
-            player.sendMessage(ClickListener.IMPROPER_FORMAT_MESSAGE);
+            player.sendMessage(MessageFinals.IMPROPER_FORMAT_MESSAGE);
             return true;
         }
         // we have a valid scroll
         item.setAmount(64);
-        player.sendMessage("I'm so glad I learned this scroll duplication spell!");
+        player.sendMessage(MessageFinals.DUPLICATE_MESSAGE);
         return false;
     }
 }

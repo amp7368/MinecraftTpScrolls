@@ -1,5 +1,7 @@
-package apple;
+package apple.commands;
 
+import apple.MessageFinals;
+import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +38,7 @@ public class CreateCommand implements CommandExecutor {
             return true;
         }
         if (args.length != 1) {
-            commandSender.sendMessage("Correct Usage: /scroll_create <name>");
+            commandSender.sendMessage(MessageFinals.CREATE_CORRECT_USAGE);
             return true;
         }
         String itemName = args[0];
@@ -57,7 +59,7 @@ public class CreateCommand implements CommandExecutor {
             coords.add("z:" + loc.getBlockZ());
             World w = loc.getWorld();
             if (w == null) {
-                commandSender.sendMessage("Something went wrong >.>");
+                commandSender.sendMessage(MessageFinals.SOMETHING_WRONG);
                 return true;
             }
             coords.add("world:" + w.getName());
@@ -69,7 +71,7 @@ public class CreateCommand implements CommandExecutor {
 
             player.getInventory().setItemInMainHand(scroll);
         }else{
-            commandSender.sendMessage("My hands are full right now!");
+            commandSender.sendMessage(MessageFinals.CREATE_FULL_HANDS);
         }
         return false;
     }
