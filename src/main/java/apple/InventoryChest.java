@@ -7,20 +7,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public class InventoryChest implements InventoryHolder, Listener {
     private final Inventory inventory;
-    private JavaPlugin plugin;
 
     public InventoryChest(ScrollMain plugin, int size, String name) {
         inventory = Bukkit.createInventory(this, size, name);
-        this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -65,10 +67,44 @@ public class InventoryChest implements InventoryHolder, Listener {
         if (clickedItem == null || clickedItem.getType() == Material.AIR)
             return;
 
-        System.out.println("contents size" + String.valueOf(player.getInventory().getContents().length));
-        if (player.getInventory().getContents().length == 27) {
+        // get info about the clicked item
+        ItemMeta clickedMeta = clickedItem.getItemMeta();
+        if (clickedMeta == null) {
+            return;
+        }
+        List<String> clickedLore = clickedMeta.getLore();
+        Material clickedType = clickedItem.getType();
 
+        // get the player inv and contents to see if it's empty
+        PlayerInventory playerInv = player.getInventory();
+        ItemStack[] contents = playerInv.getStorageContents();
+        boolean canAddItem = false;
+        for (ItemStack item : contents) {
+            if (item == null || item.getAmount() == 0 || item.getType().equals(Material.AIR)) {
+                canAddItem = true;
+                break;
+            } else {
+                // get info about item
+                ItemMeta itemMeta = item.getItemMeta();
+                if (itemMeta == null)
+                    continue;
+                List<String> itemLore = itemMeta.getLore();
+
+                // if we already have the item in our inv
+                if (item.getType() == clickedType && itemLore != null && itemLore.equals(clickedLore)) {
+                    break;
+                }
+            }
         }
 
+        // if the player inv has an empty slot and we don't already have it add the item
+        if (canAddItem) {
+            if (event.getAction().compareTo(InventoryAction.PICKUP_HALF) == 0) {
+                clickedItem.setAmount(1);
+            } else {
+                clickedItem.setAmount(64);
+            }
+            player.getInventory().addItem(clickedItem);
+        }
     }
 }

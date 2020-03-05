@@ -8,6 +8,6 @@ public class ScrollMain extends JavaPlugin {
         new CreateCommand(this);
         new DuplicateCommand(this);
         new ClickListener(this);
-        new Scrolls(this);
+        new ScrollCommand(this);
     }
 }

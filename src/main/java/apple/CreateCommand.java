@@ -42,7 +42,7 @@ public class CreateCommand implements CommandExecutor {
         String itemName = args[0];
         ItemStack mainHand = player.getInventory().getItemInMainHand();
 
-        if (mainHand.getAmount() == 0 || mainHand.getType().equals(Material.AIR)) {
+        if (mainHand.getAmount() == 0 || mainHand.getType().equals(Material.AIR) ) {
             // create a scroll
             ItemStack scroll = new ItemStack(Material.PAPER, 64);
             ItemMeta meta = scroll.getItemMeta();
