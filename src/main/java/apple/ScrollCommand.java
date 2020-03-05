@@ -1,6 +1,5 @@
 package apple;
 
-import com.sun.istack.internal.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -27,12 +26,13 @@ public class ScrollCommand implements CommandExecutor {
     public ScrollCommand(ScrollMain plugin) {
         this.plugin = plugin;
         scrollInvAll = Bukkit.createInventory(new InventoryChest(plugin, 54, "Scrolls"), InventoryType.CHEST);
-        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "channel.yml");
-        @NotNull YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection("inventory");
         ConfigurationSection configInvAll = configInv.getConfigurationSection("all");
         int i = 1;
         ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format("item%d", i++));
+
         // get all the items in inv all
         while (configInvAllItem != null) {
             ItemStack item = getItemFromConfig(configInvAllItem);
@@ -41,14 +41,7 @@ public class ScrollCommand implements CommandExecutor {
         }
 
 
-        ItemStack item = new ItemStack(Material.PAPER);
-        ItemMeta im = item.getItemMeta();
-        assert im != null;
-        List<String> lore = new ArrayList<String>(4);
-
-        im.setLore(lore);
-        item.setItemMeta(im);
-        scrollInvAll.addItem(item);
+        // set the scroll command to execute here
         PluginCommand command = plugin.getCommand("scroll");
         if (command == null) {
             return;
@@ -60,20 +53,20 @@ public class ScrollCommand implements CommandExecutor {
         String type = config.getString("material");
         ItemStack item = new ItemStack(Material.getMaterial(type));
         List<String> lore = new ArrayList<String>(4);
-
+        ConfigurationSection configLore = config.getConfigurationSection("lore");
         // get the lore
         int i = 1;
-        String loreLine = config.getString(String.format("line%d", i++));
+        String loreLine = configLore.getString(String.format("line%d", i++));
         while (loreLine != null) {
             lore.add(loreLine);
-            loreLine = config.getString(String.format("line%d", i++));
+            loreLine = configLore.getString(String.format("line%d", i++));
         }
         ItemMeta im = item.getItemMeta();
         im.setLore(lore);
         item.setItemMeta(im);
+        item.setAmount(1);
 
         // 1 item in the stack
-        item.setAmount(1);
         return item;
     }
 
