@@ -79,7 +79,8 @@ public class InventoryChest implements InventoryHolder, Listener {
         PlayerInventory playerInv = player.getInventory();
         ItemStack[] contents = playerInv.getStorageContents();
         boolean canAddItem = false;
-        for (ItemStack item : contents) {
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
             if (item == null || item.getAmount() == 0 || item.getType().equals(Material.AIR)) {
                 canAddItem = true;
                 break;
@@ -92,6 +93,12 @@ public class InventoryChest implements InventoryHolder, Listener {
 
                 // if we already have the item in our inv
                 if (item.getType() == clickedType && itemLore != null && itemLore.equals(clickedLore)) {
+                    if (item.getAmount() != 64) {
+                        item.setAmount(64);
+                        playerInv.setItem(i, item);
+                        return;
+                    }
+                    player.sendMessage("I don't need to write any more of these scrolls..");
                     break;
                 }
             }
