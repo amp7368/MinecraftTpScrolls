@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -44,19 +45,20 @@ public class ScrollInventories {
             System.err.println("Error getting the all inventory from the yml..");
             return;
         }
+        invFromConfig(configInvAll, scrollInvAll);
+        invFromConfig(configInvAll, scrollInvAllEdit);
+    }
 
+    private static void invFromConfig(ConfigurationSection configMain, Inventory inv) {
         int i = 0;
-        ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i));
-
+        ConfigurationSection configInvAllItem = configMain.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i));
+        assert configInvAllItem != null;
         // get all the items in inv all
         while (i < 54) {
-            assert configInvAllItem != null;
             ItemStack item = getItemFromConfig(configInvAllItem);
-            scrollInvAll.setItem(i, item);
-            scrollInvAllEdit.setItem(i, new ItemStack(item));
-            configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, ++i));
+            inv.setItem(i, item);
+            configInvAllItem = configMain.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, ++i));
         }
-
     }
 
     private static ItemStack getItemFromConfig(ConfigurationSection config) {
@@ -107,4 +109,24 @@ public class ScrollInventories {
         return item;
     }
 
+    public static Inventory open(Player player) throws Exception {
+        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
+        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
+        if (configInv == null) {
+
+            throw new Exception("[ScrollsTp] Error getting any inventory from the yml..");
+        }
+        ConfigurationSection configInvPriv = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
+        if (configInvPriv == null) {
+            throw new Exception("[ScrollsTp] Error getting the private inventory from the yml..");
+        }
+        ConfigurationSection configInvPrivPlay = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
+        if (configInvPrivPlay == null) {
+            return scrollInvPrivate;
+        }
+        invFromConfig(configInvPrivPlay, scrollInvPrivate);
+        return scrollInvPrivate;
+    }
 }
