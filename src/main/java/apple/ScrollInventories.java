@@ -29,8 +29,8 @@ public class ScrollInventories {
 
     public static void update() {
         System.out.println("updating");
-        scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), 54, "name");
-        scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit");
+        scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), 54, "PublicScrolls");
+        scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);

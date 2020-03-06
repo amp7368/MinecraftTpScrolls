@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -28,11 +27,9 @@ public class InventoryInteractListener implements Listener {
     @EventHandler
     public void inventoryEvent(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
-        System.out.println("interact event");
-
         if (holder == null)
             return;
-        // if this isn't my inventory, I dont care
+        // if this isn't all inventory, I dont care
         if (holder == ScrollInventories.scrollInvAll.getHolder()) {
             dealWithAllInv(event);
         }
@@ -99,12 +96,13 @@ public class InventoryInteractListener implements Listener {
 
         // if the player inv has an empty slot and we don't already have it add the item
         if (canAddItem) {
+            ItemStack newItem = new ItemStack(clickedItem);
             if (event.getAction().compareTo(InventoryAction.PICKUP_HALF) == 0) {
-                clickedItem.setAmount(1);
+                newItem.setAmount(1);
             } else {
-                clickedItem.setAmount(64);
+                newItem.setAmount(64);
             }
-            player.getInventory().addItem(clickedItem);
+            player.getInventory().addItem(newItem);
         }
     }
 }
