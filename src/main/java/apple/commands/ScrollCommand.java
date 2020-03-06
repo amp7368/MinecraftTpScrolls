@@ -2,13 +2,18 @@ package apple.commands;
 
 import apple.ScrollInventories;
 import apple.ScrollMain;
+import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class ScrollCommand implements CommandExecutor {
     private JavaPlugin plugin;
@@ -33,12 +38,32 @@ public class ScrollCommand implements CommandExecutor {
         if (player == null)
             return false;
 
-        // open the scroll inventory
-        if (player.isOp()) {
-            player.openInventory(ScrollInventories.MainGUIOp);
-        } else {
+        if (!player.isOp()) {
             player.openInventory(ScrollInventories.MainGUI);
+            return false;
         }
+
+        boolean isAdmin = false;
+        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "admins.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection configAdmins = config.getConfigurationSection("admins");
+        int i = 0;
+        String uuid = player.getUniqueId().toString();
+        if (configAdmins == null) {
+            System.err.println("Something went wrong with reading the admins.");
+            player.openInventory(ScrollInventories.MainGUI);
+            return false;
+        }
+        String configAdmin = configAdmins.getString("admin" + i++);
+        while (configAdmin != null) {
+            if (configAdmin.equals(uuid)) {
+                // open the scroll inventory
+                player.openInventory(ScrollInventories.MainGUIOp);
+                return false;
+            }
+            configAdmin = configAdmins.getString("admin" + i++);
+        }
+        player.openInventory(ScrollInventories.MainGUI);
         return false;
     }
 }
