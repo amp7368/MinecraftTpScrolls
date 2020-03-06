@@ -23,7 +23,7 @@ public class DuplicateCommand implements CommandExecutor {
         this.plugin = plugin;
         PluginCommand command = plugin.getCommand("scroll_duplicate");
         if (command == null) {
-            System.out.println("ScrollsTp could not get the scrollDuplicate command");
+            System.err.println("ScrollsTp could not get the scrollDuplicate command");
             return;
         }
         command.setExecutor(this);

@@ -1,4 +1,4 @@
-package apple.utils;
+package apple.finals;
 
 public class YMLNavigate {
     public static final String INVENTORY = "inventory";

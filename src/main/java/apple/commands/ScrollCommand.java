@@ -3,18 +3,13 @@ package apple.commands;
 import apple.ScrollInventories;
 import apple.ScrollMain;
 import apple.utils.GUIOpen;
-import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class ScrollCommand implements CommandExecutor {
     private JavaPlugin plugin;
@@ -24,6 +19,7 @@ public class ScrollCommand implements CommandExecutor {
         // set the scroll command to execute here
         PluginCommand command = plugin.getCommand("scroll");
         if (command == null) {
+            System.err.println("ScrollsTp could not get the scroll command");
             return;
         }
         command.setExecutor(this);

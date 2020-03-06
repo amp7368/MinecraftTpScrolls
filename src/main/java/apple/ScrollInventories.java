@@ -2,9 +2,8 @@ package apple;
 
 import apple.guiTypes.*;
 import apple.finals.MessageFinals;
-import apple.listeners.InventoryExitListener;
 import apple.utils.OneToOneMap;
-import apple.utils.YMLNavigate;
+import apple.finals.YMLNavigate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -144,7 +143,7 @@ public class ScrollInventories {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
         if (configInv == null) {
-            throw new Exception("[ScrollsTp] Error getting any inventory from the yml..");
+            throw new Exception(MessageFinals.ERROR_ANY_INVENTORY_GET);
         }
         ConfigurationSection configInvPriv = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
         if (configInvPriv == null) {

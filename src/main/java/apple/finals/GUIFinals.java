@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GUIFinals {
+    public static final String ADMIN = "admin" ;
     public static Set<SpaceInventory> sideGui = new HashSet<SpaceInventory>();
     private static ItemStack itemGray;
     private static ItemStack itemHome;

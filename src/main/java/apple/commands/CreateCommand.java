@@ -25,7 +25,7 @@ public class CreateCommand implements CommandExecutor {
         this.plugin = plugin;
         PluginCommand command = plugin.getCommand("scroll_create");
         if (command == null) {
-            System.out.println("ScrollsTp could not get the scroll_create command");
+            System.err.println("ScrollsTp could not get the scroll_create command");
             return;
         }
         command.setExecutor(this);

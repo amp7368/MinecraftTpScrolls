@@ -1,6 +1,7 @@
 package apple.utils;
 
 import apple.ScrollInventories;
+import apple.finals.GUIFinals;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class GUIOpen {
     public static boolean openMainGUI(Player player) {
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "admins.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        ConfigurationSection configAdmins = config.getConfigurationSection("admins");
+        ConfigurationSection configAdmins = config.getConfigurationSection(GUIFinals.ADMIN);
         int i = 0;
         String uuid = player.getUniqueId().toString();
         if (configAdmins == null) {
@@ -26,14 +27,14 @@ public class GUIOpen {
             player.openInventory(ScrollInventories.MainGUI);
             return false;
         }
-        String configAdmin = configAdmins.getString("admin" + i++);
+        String configAdmin = configAdmins.getString(GUIFinals.ADMIN + i++);
         while (configAdmin != null) {
             if (configAdmin.equals(uuid)) {
                 // open the MainOp inventory
                 player.openInventory(ScrollInventories.MainGUIOp);
                 return false;
             }
-            configAdmin = configAdmins.getString("admin" + i++);
+            configAdmin = configAdmins.getString(GUIFinals.ADMIN + i++);
         }
         player.openInventory(ScrollInventories.MainGUI);
         return false;

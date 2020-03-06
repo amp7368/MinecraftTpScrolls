@@ -1,7 +1,7 @@
 package apple;
 
 import apple.finals.MessageFinals;
-import apple.utils.YMLNavigate;
+import apple.finals.YMLNavigate;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;

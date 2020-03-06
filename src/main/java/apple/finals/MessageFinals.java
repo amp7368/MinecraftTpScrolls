@@ -11,4 +11,5 @@ public class MessageFinals {
     public static final String GET_ALREADY_HAVE = "I don't need to write any more of these scrolls..";
     public static final String ERROR_ALL_INVENTORY_GET = "Error getting the all inventory from the yml..";
     public static final String ERROR_CREATE_INV = "There has been an issue with creating the configInventory";
+    public static final String ERROR_ANY_INVENTORY_GET = "[ScrollsTp] Error getting any inventory from the yml..";
 }

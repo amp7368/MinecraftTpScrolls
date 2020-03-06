@@ -2,29 +2,16 @@ package apple.listeners;
 
 import apple.EditExit;
 import apple.ScrollInventories;
-import apple.finals.MessageFinals;
 import apple.guiTypes.GUIPrivate;
 import apple.guiTypes.GUIPrivateEdit;
 import apple.guiTypes.GUIPublicEdit;
-import apple.utils.YMLNavigate;
+import apple.finals.YMLNavigate;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.file.YamlConfigurationOptions;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 public class InventoryExitListener implements Listener {
     private JavaPlugin plugin;
