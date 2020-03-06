@@ -1,6 +1,7 @@
 package apple;
 
 import apple.listeners.InventoryChest;
+import apple.utils.OneToOneMap;
 import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,7 +23,8 @@ public class ScrollInventories {
 
     public static Inventory scrollInvAll;
     public static Inventory scrollInvAllEdit;
-    public static HashMap<String, Inventory> scrollInvIndividual = new HashMap<String, Inventory>();
+    public static OneToOneMap<String, Inventory> scrollInvIndividual = new OneToOneMap<String, Inventory>();
+    public static OneToOneMap<String, Inventory> scrollInvEditIndividual = new OneToOneMap<String, Inventory>();
     private static JavaPlugin plugin;
 
     public ScrollInventories(JavaPlugin pl) {
@@ -109,24 +111,29 @@ public class ScrollInventories {
         return item;
     }
 
-    public static Inventory open(Player player) throws Exception {
-        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
+    public static Inventory open(Player player, boolean isEditable) throws Exception {
+        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsPrivate");
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
         if (configInv == null) {
-
             throw new Exception("[ScrollsTp] Error getting any inventory from the yml..");
         }
         ConfigurationSection configInvPriv = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
         if (configInvPriv == null) {
             throw new Exception("[ScrollsTp] Error getting the private inventory from the yml..");
         }
-        ConfigurationSection configInvPrivPlay = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
-        if (configInvPrivPlay == null) {
-            return scrollInvPrivate;
+        ConfigurationSection configInvPrivPlay = configInvPriv.getConfigurationSection(player.getUniqueId().toString());
+        if (configInvPrivPlay != null) {
+            invFromConfig(configInvPrivPlay, scrollInvPrivate);
         }
-        invFromConfig(configInvPrivPlay, scrollInvPrivate);
+
+        // put the inventory in the correct currently opened inventories
+        if (isEditable) {
+            scrollInvEditIndividual.put(player.getUniqueId().toString(), scrollInvPrivate);
+        } else {
+            scrollInvIndividual.put(player.getUniqueId().toString(), scrollInvPrivate);
+        }
         return scrollInvPrivate;
     }
 }

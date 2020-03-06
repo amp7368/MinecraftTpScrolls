@@ -6,10 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.YamlConfigurationOptions;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,18 +27,31 @@ public class InventoryExitListener implements Listener {
     public InventoryExitListener(JavaPlugin plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        System.out.println("initialized exit listener");
     }
 
 
     @EventHandler
     public void inventoryExit(InventoryCloseEvent event) {
-        if (event.getInventory().getHolder() == ScrollInventories.scrollInvAllEdit.getHolder()) {
-            editAll(event.getInventory());
+        boolean isEditEditor = false;
+        InventoryHolder currentHolder = event.getInventory().getHolder();
+        for (Inventory inv : ScrollInventories.scrollInvEditIndividual.getValues()) {
+            if (inv.getHolder() == currentHolder) {
+                isEditEditor = true;
+                break;
+            }
+        }
+
+        // edit if necessary when you exit the inventory
+        if (isEditEditor) {
+            String uuid = event.getPlayer().getUniqueId().toString();
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + "." + uuid);
+            ScrollInventories.scrollInvEditIndividual.popKey(uuid);
+        } else if (event.getInventory().getHolder() == ScrollInventories.scrollInvAllEdit.getHolder()) {
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL);
         }
     }
 
-    public void editAll(Inventory inventory) {
+    public void editAll(Inventory inventory, String invName) {
         // get the yml for the contents of the inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -44,10 +60,10 @@ public class InventoryExitListener implements Listener {
         if (configInv == null)
             return;
         // remove the inventoryAllSection
-        configInv.set(YMLNavigate.INVENTORY_ALL, null);
+        configInv.set(invName, null);
 
         // create the configInvAll
-        ConfigurationSection configInvAll = configInv.createSection(YMLNavigate.INVENTORY_ALL);
+        ConfigurationSection configInvAll = configInv.createSection(invName);
 
         int size = inventory.getSize();
         for (int itemI = 0; itemI < size; itemI++) {
