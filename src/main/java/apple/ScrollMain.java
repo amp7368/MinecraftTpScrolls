@@ -2,7 +2,6 @@ package apple;
 
 import apple.commands.*;
 import apple.listeners.ClickListener;
-import apple.listeners.InventoryChest;
 import apple.listeners.InventoryExitListener;
 import apple.listeners.InventoryInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;

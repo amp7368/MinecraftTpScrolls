@@ -52,22 +52,21 @@ public class InventoryExitListener implements Listener {
         int size = inventory.getSize();
         for (int itemI = 0; itemI < size; itemI++) {
             ItemStack item = inventory.getItem(itemI);
+            if (item == null || item.getType() == Material.AIR)
+                continue;
+
             // create the item section in the yml
             configInvAll.createSection(String.format(YMLNavigate.ITEM + "%d", itemI));
             ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format(YMLNavigate.ITEM + "%d", itemI));
             if (configInvAllItem == null)
                 continue;
 
-            // if the item is nothing, set it to such
-            if (item == null) {
-                configInvAllItem.set(YMLNavigate.MATERIAL, Material.AIR.toString());
-                continue;
-            } else {
-                configInvAllItem.set(YMLNavigate.MATERIAL, item.getType().toString());
-                ItemMeta im = item.getItemMeta();
-                if (im != null)
-                    configInvAllItem.set(YMLNavigate.NAME, im.getDisplayName());
-            }
+            // set the item to what it is
+            configInvAllItem.set(YMLNavigate.MATERIAL, item.getType().toString());
+            ItemMeta im = item.getItemMeta();
+            if (im != null)
+                configInvAllItem.set(YMLNavigate.NAME, im.getDisplayName());
+
             configInvAllItem.createSection(YMLNavigate.LORE);
             ConfigurationSection configInvAllItemLore = configInvAllItem.getConfigurationSection(YMLNavigate.LORE);
             ItemMeta itemMeta = item.getItemMeta();

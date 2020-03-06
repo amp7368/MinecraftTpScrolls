@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,12 +14,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ScrollInventories {
 
     public static Inventory scrollInvAll;
     public static Inventory scrollInvAllEdit;
+    public static HashMap<String, Inventory> scrollInvIndividual = new HashMap<String, Inventory>();
     private static JavaPlugin plugin;
 
     public ScrollInventories(JavaPlugin pl) {
@@ -28,7 +30,6 @@ public class ScrollInventories {
     }
 
     public static void update() {
-        System.out.println("updating");
         scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), 54, "PublicScrolls");
         scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
@@ -48,7 +49,8 @@ public class ScrollInventories {
         ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i));
 
         // get all the items in inv all
-        while (configInvAllItem != null) {
+        while (i < 54) {
+            assert configInvAllItem != null;
             ItemStack item = getItemFromConfig(configInvAllItem);
             scrollInvAll.setItem(i, item);
             scrollInvAllEdit.setItem(i, new ItemStack(item));
@@ -58,6 +60,8 @@ public class ScrollInventories {
     }
 
     private static ItemStack getItemFromConfig(ConfigurationSection config) {
+        if (config == null)
+            return new ItemStack(Material.AIR);
         String type = config.getString(YMLNavigate.MATERIAL);
         if (type == null)
             return new ItemStack(Material.AIR);
@@ -69,9 +73,9 @@ public class ScrollInventories {
 
         // get the name of the item
         String name = config.getString(YMLNavigate.NAME);
-        if (name !=null){
+        if (name != null) {
             ItemMeta im = item.getItemMeta();
-            if(im != null){
+            if (im != null) {
                 im.setDisplayName(name);
                 item.setItemMeta(im);
             }
