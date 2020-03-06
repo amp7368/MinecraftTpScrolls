@@ -28,10 +28,12 @@ public class InventoryInteractListener implements Listener {
     @EventHandler
     public void inventoryEvent(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
+        System.out.println("interact event");
+
         if (holder == null)
             return;
         // if this isn't my inventory, I dont care
-        if (holder.equals(ScrollInventories.scrollInvAll)) {
+        if (holder == ScrollInventories.scrollInvAll.getHolder()) {
             dealWithAllInv(event);
         }
     }

@@ -7,4 +7,5 @@ public class YMLNavigate {
     public static final String MATERIAL = "material";
     public static final String LORE = "lore";
     public static final String LINE ="line" ;
+    public static final String NAME = "displayName";
 }

@@ -9,7 +9,7 @@ public class InventoryChest implements InventoryHolder {
     private final Inventory inventory;
 
     public InventoryChest(int size, String name) {
-        inventory = Bukkit.createInventory(this, size, name);
+        inventory = Bukkit.createInventory(null, size, name);
     }
 
     @Override

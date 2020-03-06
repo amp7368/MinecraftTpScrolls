@@ -33,6 +33,7 @@ public class ScrollCommand implements CommandExecutor {
         if (player == null)
             return false;
 
+        System.out.println("open scroll inv");
         // open the scroll inventory
         player.openInventory(ScrollInventories.scrollInvAll);
 

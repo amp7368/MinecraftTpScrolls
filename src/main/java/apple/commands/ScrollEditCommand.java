@@ -22,6 +22,7 @@ public class ScrollEditCommand implements CommandExecutor {
         Player player = Bukkit.getPlayer(commandSender.getName());
         if (player == null)
             return true;
+        System.out.println("opening edit inv");
         player.openInventory(ScrollInventories.scrollInvAllEdit);
         return false;
     }

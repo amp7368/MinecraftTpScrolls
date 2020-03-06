@@ -28,8 +28,9 @@ public class ScrollInventories {
     }
 
     public static void update() {
-        scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), InventoryType.CHEST);
-        scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), InventoryType.CHEST);
+        System.out.println("updating");
+        scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), 54, "name");
+        scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit");
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
@@ -43,24 +44,46 @@ public class ScrollInventories {
             return;
         }
 
-        int i = 1;
-        ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i++));
+        int i = 0;
+        ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i));
 
         // get all the items in inv all
         while (configInvAllItem != null) {
             ItemStack item = getItemFromConfig(configInvAllItem);
-            configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i++));
-            scrollInvAll.addItem(item);
-            scrollInvAllEdit.addItem(item);
+            scrollInvAll.setItem(i, item);
+            scrollInvAllEdit.setItem(i, new ItemStack(item));
+            configInvAllItem = configInvAll.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, ++i));
         }
+
     }
 
     private static ItemStack getItemFromConfig(ConfigurationSection config) {
-        //todo update these vvv
         String type = config.getString(YMLNavigate.MATERIAL);
-        ItemStack item = new ItemStack(Material.getMaterial(type));
+        if (type == null)
+            return new ItemStack(Material.AIR);
+        Material materialType = Material.getMaterial(type);
+        if (materialType == null)
+            return new ItemStack(Material.AIR);
+        ItemStack item = new ItemStack(materialType);
+        item.setAmount(1);
+
+        // get the name of the item
+        String name = config.getString(YMLNavigate.NAME);
+        if (name !=null){
+            ItemMeta im = item.getItemMeta();
+            if(im != null){
+                im.setDisplayName(name);
+                item.setItemMeta(im);
+            }
+        }
+
         List<String> lore = new ArrayList<String>(4);
         ConfigurationSection configLore = config.getConfigurationSection(YMLNavigate.LORE);
+
+        if (configLore == null) {
+            return item;
+        }
+
         // get the lore
         int i = 1;
         String loreLine = configLore.getString(String.format("%s%d", YMLNavigate.LINE, i++));
@@ -69,9 +92,12 @@ public class ScrollInventories {
             loreLine = configLore.getString(String.format("%s%d", YMLNavigate.LINE, i++));
         }
         ItemMeta im = item.getItemMeta();
+
+        // wtf happened if this is true
+        if (im == null)
+            return item;
         im.setLore(lore);
         item.setItemMeta(im);
-        item.setAmount(1);
 
         // 1 item in the stack
         return item;

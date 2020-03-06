@@ -2,9 +2,11 @@ package apple.listeners;
 
 import apple.ScrollInventories;
 import apple.utils.YMLNavigate;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -21,11 +23,14 @@ public class InventoryExitListener implements Listener {
 
     public InventoryExitListener(JavaPlugin plugin) {
         this.plugin = plugin;
-        plugin.getPluginLoader().createRegisteredListeners(this, plugin);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        System.out.println("initialized exit listener");
     }
 
+
+    @EventHandler
     public void inventoryExit(InventoryCloseEvent event) {
-        if (event.getInventory().equals(ScrollInventories.scrollInvAllEdit)) {
+        if (event.getInventory().getHolder() == ScrollInventories.scrollInvAllEdit.getHolder()) {
             editAll(event.getInventory());
         }
     }
@@ -36,25 +41,22 @@ public class InventoryExitListener implements Listener {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
         // make sure configInv is not null
-        System.out.println("configInv may be null");
         if (configInv == null)
             return;
-        System.out.println("got here");
         // remove the inventoryAllSection
         configInv.set(YMLNavigate.INVENTORY_ALL, null);
 
         // create the configInvAll
         ConfigurationSection configInvAll = configInv.createSection(YMLNavigate.INVENTORY_ALL);
 
-        // todo optimize vvv
-        for (int itemI = 0; itemI < inventory.getSize(); itemI++) {
+        int size = inventory.getSize();
+        for (int itemI = 0; itemI < size; itemI++) {
             ItemStack item = inventory.getItem(itemI);
             // create the item section in the yml
             configInvAll.createSection(String.format(YMLNavigate.ITEM + "%d", itemI));
             ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format(YMLNavigate.ITEM + "%d", itemI));
             if (configInvAllItem == null)
                 continue;
-            configInvAll.createSection(YMLNavigate.MATERIAL);
 
             // if the item is nothing, set it to such
             if (item == null) {
@@ -62,6 +64,9 @@ public class InventoryExitListener implements Listener {
                 continue;
             } else {
                 configInvAllItem.set(YMLNavigate.MATERIAL, item.getType().toString());
+                ItemMeta im = item.getItemMeta();
+                if (im != null)
+                    configInvAllItem.set(YMLNavigate.NAME, im.getDisplayName());
             }
             configInvAllItem.createSection(YMLNavigate.LORE);
             ConfigurationSection configInvAllItemLore = configInvAllItem.getConfigurationSection(YMLNavigate.LORE);
