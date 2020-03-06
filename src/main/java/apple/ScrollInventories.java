@@ -65,29 +65,29 @@ public class ScrollInventories {
             privateItem.setItemMeta(im);
         }
         ItemStack privateItemEdit = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
-        im = privateItem.getItemMeta();
+        im = privateItemEdit.getItemMeta();
         if (im != null) {
             im.setDisplayName("Editing Private Scrolls");
-            privateItem.setItemMeta(im);
+            privateItemEdit.setItemMeta(im);
         }
         ItemStack publicItem = new ItemStack(Material.GREEN_TERRACOTTA);
-        im = privateItem.getItemMeta();
+        im = publicItem.getItemMeta();
         if (im != null) {
             im.setDisplayName("Public Scrolls");
-            privateItem.setItemMeta(im);
+            publicItem.setItemMeta(im);
         }
         if (isOp) {
             ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
-            im = privateItem.getItemMeta();
+            im = publicItemEdit.getItemMeta();
             if (im != null) {
                 im.setDisplayName("Editing Public Scrolls (CAUTION!!!)");
-                privateItem.setItemMeta(im);
+                publicItemEdit.setItemMeta(im);
             }
-            gui.setItem(7, publicItemEdit);
+            gui.setItem(1, publicItemEdit);
         }
 
-        gui.setItem(8, privateItem);
-        gui.setItem(4, privateItemEdit);
+        gui.setItem(8, privateItemEdit);
+        gui.setItem(4, privateItem);
         gui.setItem(0, publicItem);
 
         return gui;

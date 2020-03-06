@@ -30,7 +30,7 @@ public class InventoryInteractListener implements Listener {
         InventoryHolder currentHolder = event.getInventory().getHolder();
         if (currentHolder == null)
             return;
-        // if this isn't all inventory, I dont care
+        // if this isn't an inventory, I dont care
         if (ScrollInventories.scrollInvAll.getHolder() == currentHolder) {
             dealWithScrollInv(event);
         }
@@ -40,7 +40,7 @@ public class InventoryInteractListener implements Listener {
                 break;
             }
         }
-        if (currentHolder == ScrollInventories.MainGUI.getHolder()) {
+        if (currentHolder == ScrollInventories.MainGUI.getHolder() || currentHolder == ScrollInventories.MainGUIOp.getHolder()) {
             dealWithMainGUI(event);
         }
     }

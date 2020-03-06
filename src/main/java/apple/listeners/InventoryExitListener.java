@@ -64,6 +64,7 @@ public class InventoryExitListener implements Listener {
             configInv.set(invName, null);
         }catch(IllegalArgumentException ignore){
             // ignore this, it'll happen if the server is lagging a lot i think
+            return;
         }
         // create the configInv___
         ConfigurationSection configInvName = configInv.createSection(invName);
