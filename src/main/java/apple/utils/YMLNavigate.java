@@ -9,4 +9,5 @@ public class YMLNavigate {
     public static final String LINE = "line";
     public static final String NAME = "displayName";
     public static final String INVENTORY_PRIVATE = "private";
+    public static final String PLAYER_NAME = "playerName";
 }

@@ -13,10 +13,7 @@ public class ScrollMain extends JavaPlugin {
 
         new CreateCommand(this);
         new DuplicateCommand(this);
-//        new ScrollCommand(this);
-//        new ScrollEditCommand(this);
         new ScrollHelpCommand(this);
-//        new ScrollPrivateCommand(this);
         new ScrollCommandOnly(this);
 
         new InventoryInteractListener(this);

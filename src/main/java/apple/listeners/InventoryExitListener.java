@@ -44,14 +44,14 @@ public class InventoryExitListener implements Listener {
         // edit if necessary when you exit the inventory
         if (isEditEditor) {
             String uuid = event.getPlayer().getUniqueId().toString();
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + "." + uuid);
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + ".", event.getPlayer().getName());
             ScrollInventories.scrollInvEditIndividual.popKey(uuid);
         } else if (event.getInventory().getHolder() == ScrollInventories.scrollInvAllEdit.getHolder()) {
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL);
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL,"server");
         }
     }
 
-    public void editAll(Inventory inventory, String invName) {
+    public void editAll(Inventory inventory, String invName,String playerName) {
         // get the yml for the contents of the inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -59,12 +59,12 @@ public class InventoryExitListener implements Listener {
         // make sure configInv is not null
         if (configInv == null)
             return;
-        // remove the inventoryAllSection
+        // remove the inventory___Section
         configInv.set(invName, null);
 
-        // create the configInvAll
-        ConfigurationSection configInvAll = configInv.createSection(invName);
-
+        // create the configInv___
+        ConfigurationSection configInvName = configInv.createSection(invName);
+        configInvName.set(YMLNavigate.PLAYER_NAME , playerName);
         int size = inventory.getSize();
         for (int itemI = 0; itemI < size; itemI++) {
             ItemStack item = inventory.getItem(itemI);
@@ -72,8 +72,8 @@ public class InventoryExitListener implements Listener {
                 continue;
 
             // create the item section in the yml
-            configInvAll.createSection(String.format(YMLNavigate.ITEM + "%d", itemI));
-            ConfigurationSection configInvAllItem = configInvAll.getConfigurationSection(String.format(YMLNavigate.ITEM + "%d", itemI));
+            configInvName.createSection(String.format(YMLNavigate.ITEM + "%d", itemI));
+            ConfigurationSection configInvAllItem = configInvName.getConfigurationSection(String.format(YMLNavigate.ITEM + "%d", itemI));
             if (configInvAllItem == null)
                 continue;
 
