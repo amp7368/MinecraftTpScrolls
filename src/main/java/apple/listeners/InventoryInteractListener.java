@@ -38,8 +38,8 @@ public class InventoryInteractListener implements Listener {
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
             int rawSlot = event.getRawSlot();
-            if (rawSlot >= holder.getInventory().getSize()) {
-                System.err.println(String.format("[ScrollsTp] %s tried to access the %d slot of the GUI", event.getWhoClicked().getName(), rawSlot));
+            if (rawSlot >= holder.getInventory().getSize() || rawSlot<0) {
+                event.setCancelled(true);
                 return;
             }
             if (!((GUI) holder).getSpace(event.getRawSlot()).editable)

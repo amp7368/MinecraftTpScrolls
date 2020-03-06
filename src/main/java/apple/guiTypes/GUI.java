@@ -35,6 +35,8 @@ public class GUI implements InventoryHolder {
     }
 
     public Space getSpace(int i) {
+        if (i < 0 || i > spaces.size())
+            return null;
         return spaces.get(i);
     }
 
