@@ -2,6 +2,7 @@ package apple.commands;
 
 import apple.ScrollInventories;
 import apple.ScrollMain;
+import apple.utils.GUIOpen;
 import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -43,27 +44,6 @@ public class ScrollCommand implements CommandExecutor {
             return false;
         }
 
-        boolean isAdmin = false;
-        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "admins.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        ConfigurationSection configAdmins = config.getConfigurationSection("admins");
-        int i = 0;
-        String uuid = player.getUniqueId().toString();
-        if (configAdmins == null) {
-            System.err.println("Something went wrong with reading the admins.");
-            player.openInventory(ScrollInventories.MainGUI);
-            return false;
-        }
-        String configAdmin = configAdmins.getString("admin" + i++);
-        while (configAdmin != null) {
-            if (configAdmin.equals(uuid)) {
-                // open the scroll inventory
-                player.openInventory(ScrollInventories.MainGUIOp);
-                return false;
-            }
-            configAdmin = configAdmins.getString("admin" + i++);
-        }
-        player.openInventory(ScrollInventories.MainGUI);
-        return false;
+        return GUIOpen.openMainGUI(player);
     }
 }

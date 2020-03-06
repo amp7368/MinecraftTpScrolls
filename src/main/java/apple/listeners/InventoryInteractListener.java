@@ -2,7 +2,9 @@ package apple.listeners;
 
 import apple.ScrollInventories;
 import apple.guiTypes.*;
+import apple.utils.GUIActionsFinal;
 import apple.utils.GUIFinals;
+import apple.utils.GUIOpen;
 import apple.utils.MessageFinals;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,6 +34,24 @@ public class InventoryInteractListener implements Listener {
         InventoryHolder currentHolder = event.getInventory().getHolder();
         if (currentHolder == null)
             return;
+
+
+        // deal with buttons on the inventory
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof GUI) {
+            if (!((GUI) holder).getSpcae(event.getRawSlot()).editable)
+                event.setCancelled(true);
+            ItemStack currentItem = event.getCurrentItem();
+            if (currentItem != null) {
+                ItemMeta im = currentItem.getItemMeta();
+                if (im != null) {
+                    String localName = im.getLocalizedName();
+                    GUIActionsFinal.dealWith(localName, event);
+                }
+            }
+        }
+
+
         // associate the click with the right type of inventory
         if (currentHolder instanceof GUIPublic) {
             dealWithScrollInv(event);
@@ -47,12 +67,6 @@ public class InventoryInteractListener implements Listener {
     }
 
     private void dealWithEditInv(InventoryClickEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
-        if (holder instanceof GUI) {
-            if (!((GUI) holder).getSpcae(event.getRawSlot()).editable)
-                event.setCancelled(true);
-        }
-        // otherwise wtf happened?
     }
 
     private void dealWithMainGUI(InventoryClickEvent event) {

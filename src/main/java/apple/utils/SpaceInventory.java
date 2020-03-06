@@ -11,16 +11,10 @@ public class SpaceInventory {
     boolean editable;
     int index;
 
-    public SpaceInventory(int index, boolean isEditable, List<String> lore, String displayName, Material type) {
+    public SpaceInventory(int index, boolean isEditable, ItemStack item) {
         this.index = index;
         editable = isEditable;
-        item = new ItemStack(type);
-        ItemMeta im = item.getItemMeta();
-        if (im != null) {
-            im.setDisplayName(displayName);
-            im.setLore(lore);
-            item.setItemMeta(im);
-        }
+        this.item = item;
     }
 
     public boolean isEditable() {
