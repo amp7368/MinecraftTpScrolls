@@ -1,6 +1,6 @@
 package apple.guiTypes;
 
-import apple.utils.GUIFinals;
+import apple.finals.GUIFinals;
 import apple.utils.SpaceInventory;
 import org.bukkit.inventory.Inventory;
 

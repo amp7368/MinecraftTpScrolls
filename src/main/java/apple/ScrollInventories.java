@@ -1,7 +1,7 @@
 package apple;
 
 import apple.guiTypes.*;
-import apple.utils.MessageFinals;
+import apple.finals.MessageFinals;
 import apple.utils.OneToOneMap;
 import apple.utils.YMLNavigate;
 import org.bukkit.Material;

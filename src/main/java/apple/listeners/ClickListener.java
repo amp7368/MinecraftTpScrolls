@@ -1,6 +1,6 @@
 package apple.listeners;
 
-import apple.utils.MessageFinals;
+import apple.finals.MessageFinals;
 import apple.ScrollMain;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

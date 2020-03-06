@@ -1,7 +1,5 @@
 package apple.guiTypes;
 
-import apple.utils.GUIFinals;
-import apple.utils.SpaceInventory;
 import org.bukkit.inventory.Inventory;
 
 public class GUIPublicEdit extends GUI {

@@ -4,8 +4,8 @@ import apple.commands.*;
 import apple.listeners.ClickListener;
 import apple.listeners.InventoryExitListener;
 import apple.listeners.InventoryInteractListener;
-import apple.utils.GUIActionsFinal;
-import apple.utils.GUIFinals;
+import apple.finals.GUIActionsFinal;
+import apple.finals.GUIFinals;
 import apple.utils.GUIOpen;
 import org.bukkit.plugin.java.JavaPlugin;
 

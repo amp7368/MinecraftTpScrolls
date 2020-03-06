@@ -1,4 +1,4 @@
-package apple.utils;
+package apple.finals;
 
 public class MessageFinals {
     public final static String IMPROPER_FORMAT_MESSAGE = "I can't read the language on this scroll..";

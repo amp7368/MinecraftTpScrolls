@@ -2,10 +2,8 @@ package apple.listeners;
 
 import apple.ScrollInventories;
 import apple.guiTypes.*;
-import apple.utils.GUIActionsFinal;
-import apple.utils.GUIFinals;
-import apple.utils.GUIOpen;
-import apple.utils.MessageFinals;
+import apple.finals.GUIActionsFinal;
+import apple.finals.MessageFinals;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;

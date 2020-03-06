@@ -1,6 +1,7 @@
-package apple.utils;
+package apple.finals;
 
-import apple.guiTypes.Space;
+import apple.finals.GUIActionsFinal;
+import apple.utils.SpaceInventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

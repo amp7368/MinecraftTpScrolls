@@ -1,5 +1,6 @@
-package apple.utils;
+package apple.finals;
 
+import apple.utils.GUIOpen;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
