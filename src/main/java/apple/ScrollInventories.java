@@ -1,5 +1,6 @@
 package apple;
 
+import apple.guiTypes.*;
 import apple.listeners.InventoryHolderDouble;
 import apple.utils.MessageFinals;
 import apple.utils.OneToOneMap;
@@ -34,8 +35,8 @@ public class ScrollInventories {
     }
 
     public static void update() {
-        scrollInvAll = Bukkit.createInventory(new InventoryHolderDouble(54, "PublicScrolls"), 54, "PublicScrolls");
-        scrollInvAllEdit = Bukkit.createInventory(new InventoryHolderDouble(54, "PublicScrollsEdit"), 54, "PublicScrollsEdit");
+        scrollInvAll = GUIPublic.makeGUIPublic();
+        scrollInvAllEdit = GUIPublicEdit.makeGUIPublicEdit();
         MainGUI = initializeMainGUI(false);
         MainGUIOp = initializeMainGUI(true);
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
@@ -57,7 +58,7 @@ public class ScrollInventories {
     private static Inventory initializeMainGUI(boolean isOp) {
         ItemMeta im;
         int size = 9;
-        Inventory gui = Bukkit.createInventory(new InventoryHolderDouble(size, "ScrollsGUI"), size, "Scrolls Main GUI");
+        Inventory gui = GUIMain.makeGUIMain();
         ItemStack privateItem = new ItemStack(Material.RED_TERRACOTTA);
         im = privateItem.getItemMeta();
         if (im != null) {
@@ -154,7 +155,11 @@ public class ScrollInventories {
     }
 
     public static Inventory open(Player player, boolean isEditable) throws Exception {
-        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsEdit"), 54, "ScrollsPrivate");
+        Inventory scrollInvPrivate;
+        if (isEditable)
+            scrollInvPrivate = GUIPrivateEdit.makeGUIPrivateEdit();
+        else
+            scrollInvPrivate = GUIPrivate.makeGUIPrivate();
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);

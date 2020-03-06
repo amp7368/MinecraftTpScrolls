@@ -1,6 +1,7 @@
 package apple.listeners;
 
 import apple.ScrollInventories;
+import apple.utils.GUIFinals;
 import apple.utils.MessageFinals;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,8 +41,21 @@ public class InventoryInteractListener implements Listener {
                 break;
             }
         }
+        for (Inventory inv : ScrollInventories.scrollInvEditIndividual.getValues()) {
+            if (inv.getHolder() == currentHolder) {
+                dealWithEditInv(event);
+                break;
+            }
+        }
         if (currentHolder == ScrollInventories.MainGUI.getHolder() || currentHolder == ScrollInventories.MainGUIOp.getHolder()) {
             dealWithMainGUI(event);
+        }
+    }
+
+    private void dealWithEditInv(InventoryClickEvent event) {
+        // if the interaction is in the side gui, ignore it
+        if (GUIFinals.sideGui.contains(event.getRawSlot())) {
+            event.setCancelled(true);
         }
     }
 
