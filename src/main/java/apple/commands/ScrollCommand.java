@@ -10,10 +10,10 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ScrollCommandOnly implements CommandExecutor {
+public class ScrollCommand implements CommandExecutor {
     private JavaPlugin plugin;
 
-    public ScrollCommandOnly(ScrollMain plugin) {
+    public ScrollCommand(ScrollMain plugin) {
         this.plugin = plugin;
         // set the scroll command to execute here
         PluginCommand command = plugin.getCommand("scroll");
@@ -34,8 +34,11 @@ public class ScrollCommandOnly implements CommandExecutor {
             return false;
 
         // open the scroll inventory
-        player.openInventory(ScrollInventories.MainGUI);
-
+        if (player.isOp()) {
+            player.openInventory(ScrollInventories.MainGUIOp);
+        } else {
+            player.openInventory(ScrollInventories.MainGUI);
+        }
         return false;
     }
 }

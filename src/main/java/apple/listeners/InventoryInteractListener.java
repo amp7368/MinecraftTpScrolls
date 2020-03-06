@@ -89,7 +89,9 @@ public class InventoryInteractListener implements Listener {
                 break;
             }
             case GREEN_GLAZED_TERRACOTTA: {
-                player.openInventory(ScrollInventories.scrollInvAllEdit);
+                // change based on perms
+                if (player.isOp())
+                    player.openInventory(ScrollInventories.scrollInvAllEdit);
 
                 break;
             }

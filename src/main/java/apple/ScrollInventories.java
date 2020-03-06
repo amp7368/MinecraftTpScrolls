@@ -23,6 +23,7 @@ public class ScrollInventories {
     public static Inventory scrollInvAll;
     public static Inventory scrollInvAllEdit;
     public static Inventory MainGUI;
+    public static Inventory MainGUIOp;
     public static OneToOneMap<String, Inventory> scrollInvIndividual = new OneToOneMap<String, Inventory>();
     public static OneToOneMap<String, Inventory> scrollInvEditIndividual = new OneToOneMap<String, Inventory>();
     private static JavaPlugin plugin;
@@ -33,9 +34,10 @@ public class ScrollInventories {
     }
 
     public static void update() {
-        scrollInvAll = Bukkit.createInventory(new InventoryHolderDouble(54, "Scrolls"), 54, "PublicScrolls");
-        scrollInvAllEdit = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
-        MainGUI = initializeMainGUI();
+        scrollInvAll = Bukkit.createInventory(new InventoryHolderDouble(54, "PublicScrolls"), 54, "PublicScrolls");
+        scrollInvAllEdit = Bukkit.createInventory(new InventoryHolderDouble(54, "PublicScrollsEdit"), 54, "PublicScrollsEdit");
+        MainGUI = initializeMainGUI(false);
+        MainGUIOp = initializeMainGUI(true);
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
@@ -52,17 +54,41 @@ public class ScrollInventories {
         invFromConfig(configInvAll, scrollInvAllEdit);
     }
 
-    private static Inventory initializeMainGUI() {
-        Inventory gui = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsGUI"), 54, "Scrolls Main GUI");
+    private static Inventory initializeMainGUI(boolean isOp) {
+        ItemMeta im;
+        int size = 9;
+        Inventory gui = Bukkit.createInventory(new InventoryHolderDouble(size, "ScrollsGUI"), size, "Scrolls Main GUI");
         ItemStack privateItem = new ItemStack(Material.RED_TERRACOTTA);
+        im = privateItem.getItemMeta();
+        if (im != null) {
+            im.setDisplayName("Private Scrolls");
+            privateItem.setItemMeta(im);
+        }
         ItemStack privateItemEdit = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
+        im = privateItem.getItemMeta();
+        if (im != null) {
+            im.setDisplayName("Editing Private Scrolls");
+            privateItem.setItemMeta(im);
+        }
         ItemStack publicItem = new ItemStack(Material.GREEN_TERRACOTTA);
-        ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
+        im = privateItem.getItemMeta();
+        if (im != null) {
+            im.setDisplayName("Public Scrolls");
+            privateItem.setItemMeta(im);
+        }
+        if (isOp) {
+            ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
+            im = privateItem.getItemMeta();
+            if (im != null) {
+                im.setDisplayName("Editing Public Scrolls (CAUTION!!!)");
+                privateItem.setItemMeta(im);
+            }
+            gui.setItem(7, publicItemEdit);
+        }
 
-        gui.setItem(0, privateItem);
-        gui.setItem(1, privateItemEdit);
-        gui.setItem(2, publicItem);
-        gui.setItem(3, publicItemEdit);
+        gui.setItem(8, privateItem);
+        gui.setItem(4, privateItemEdit);
+        gui.setItem(0, publicItem);
 
         return gui;
     }

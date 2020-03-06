@@ -60,8 +60,11 @@ public class InventoryExitListener implements Listener {
         if (configInv == null)
             return;
         // remove the inventory___Section
-        configInv.set(invName, null);
-
+        try {
+            configInv.set(invName, null);
+        }catch(IllegalArgumentException ignore){
+            // ignore this, it'll happen if the server is lagging a lot i think
+        }
         // create the configInv___
         ConfigurationSection configInvName = configInv.createSection(invName);
         configInvName.set(YMLNavigate.PLAYER_NAME , playerName);
