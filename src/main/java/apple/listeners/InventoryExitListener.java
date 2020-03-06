@@ -1,6 +1,9 @@
 package apple.listeners;
 
 import apple.ScrollInventories;
+import apple.guiTypes.GUIPrivate;
+import apple.guiTypes.GUIPrivateEdit;
+import apple.guiTypes.GUIPublicEdit;
 import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,26 +35,24 @@ public class InventoryExitListener implements Listener {
 
     @EventHandler
     public void inventoryExit(InventoryCloseEvent event) {
-        boolean isEditEditor = false;
-        InventoryHolder currentHolder = event.getInventory().getHolder();
-        for (Inventory inv : ScrollInventories.scrollInvEditIndividual.getValues()) {
-            if (inv.getHolder() == currentHolder) {
-                isEditEditor = true;
-                break;
-            }
-        }
+        InventoryHolder holder = event.getInventory().getHolder();
 
         // edit if necessary when you exit the inventory
-        if (isEditEditor) {
+        if (holder instanceof GUIPrivateEdit) {
             String uuid = event.getPlayer().getUniqueId().toString();
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + ".", event.getPlayer().getName());
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + "." + uuid, event.getPlayer().getName());
+            // remove the inventory from ScrollInventories to save space
             ScrollInventories.scrollInvEditIndividual.popKey(uuid);
-        } else if (event.getInventory().getHolder() == ScrollInventories.scrollInvAllEdit.getHolder()) {
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL,"server");
+        } else if (holder instanceof GUIPublicEdit) {
+            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL, "server");
+        } else if (holder instanceof GUIPrivate) {
+            String uuid = event.getPlayer().getUniqueId().toString();
+            // remove the inventory from ScrollInventories to save space
+            ScrollInventories.scrollInvIndividual.popKey(uuid);
         }
     }
 
-    public void editAll(Inventory inventory, String invName,String playerName) {
+    public void editAll(Inventory inventory, String invName, String playerName) {
         // get the yml for the contents of the inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -59,16 +60,13 @@ public class InventoryExitListener implements Listener {
         // make sure configInv is not null
         if (configInv == null)
             return;
+        System.out.println("[scrolls] the invName is " + invName);
         // remove the inventory___Section
-        try {
-            configInv.set(invName, null);
-        }catch(IllegalArgumentException ignore){
-            // ignore this, it'll happen if the server is lagging a lot i think
-            return;
-        }
+        configInv.set(invName, null);
+
         // create the configInv___
         ConfigurationSection configInvName = configInv.createSection(invName);
-        configInvName.set(YMLNavigate.PLAYER_NAME , playerName);
+        configInvName.set(YMLNavigate.PLAYER_NAME, playerName);
         int size = inventory.getSize();
         for (int itemI = 0; itemI < size; itemI++) {
             ItemStack item = inventory.getItem(itemI);

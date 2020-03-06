@@ -1,11 +1,9 @@
 package apple;
 
 import apple.guiTypes.*;
-import apple.listeners.InventoryHolderDouble;
 import apple.utils.MessageFinals;
 import apple.utils.OneToOneMap;
 import apple.utils.YMLNavigate;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,43 +53,8 @@ public class ScrollInventories {
         invFromConfig(configInvAll, scrollInvAllEdit);
     }
 
-    private static Inventory initializeMainGUI(boolean isOp) {
-        ItemMeta im;
-        int size = 9;
-        Inventory gui = GUIMain.makeGUIMain();
-        ItemStack privateItem = new ItemStack(Material.RED_TERRACOTTA);
-        im = privateItem.getItemMeta();
-        if (im != null) {
-            im.setDisplayName("Private Scrolls");
-            privateItem.setItemMeta(im);
-        }
-        ItemStack privateItemEdit = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
-        im = privateItemEdit.getItemMeta();
-        if (im != null) {
-            im.setDisplayName("Editing Private Scrolls");
-            privateItemEdit.setItemMeta(im);
-        }
-        ItemStack publicItem = new ItemStack(Material.GREEN_TERRACOTTA);
-        im = publicItem.getItemMeta();
-        if (im != null) {
-            im.setDisplayName("Public Scrolls");
-            publicItem.setItemMeta(im);
-        }
-        if (isOp) {
-            ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
-            im = publicItemEdit.getItemMeta();
-            if (im != null) {
-                im.setDisplayName("Editing Public Scrolls (CAUTION!!!)");
-                publicItemEdit.setItemMeta(im);
-            }
-            gui.setItem(1, publicItemEdit);
-        }
-
-        gui.setItem(8, privateItemEdit);
-        gui.setItem(4, privateItem);
-        gui.setItem(0, publicItem);
-
-        return gui;
+    private static Inventory initializeMainGUI(boolean isAdmin) {
+        return GUIMain.makeGUIMain(isAdmin);
     }
 
     private static void invFromConfig(ConfigurationSection configMain, Inventory inv) {

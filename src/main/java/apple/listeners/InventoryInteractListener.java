@@ -1,6 +1,7 @@
 package apple.listeners;
 
 import apple.ScrollInventories;
+import apple.guiTypes.*;
 import apple.utils.GUIFinals;
 import apple.utils.MessageFinals;
 import org.bukkit.Bukkit;
@@ -31,23 +32,16 @@ public class InventoryInteractListener implements Listener {
         InventoryHolder currentHolder = event.getInventory().getHolder();
         if (currentHolder == null)
             return;
-        // if this isn't an inventory, I dont care
-        if (ScrollInventories.scrollInvAll.getHolder() == currentHolder) {
+        // associate the click with the right type of inventory
+        if (currentHolder instanceof GUIPublic) {
             dealWithScrollInv(event);
-        }
-        for (Inventory inv : ScrollInventories.scrollInvIndividual.getValues()) {
-            if (inv.getHolder() == currentHolder) {
-                dealWithScrollInv(event);
-                break;
-            }
-        }
-        for (Inventory inv : ScrollInventories.scrollInvEditIndividual.getValues()) {
-            if (inv.getHolder() == currentHolder) {
-                dealWithEditInv(event);
-                break;
-            }
-        }
-        if (currentHolder == ScrollInventories.MainGUI.getHolder() || currentHolder == ScrollInventories.MainGUIOp.getHolder()) {
+        } else if (currentHolder instanceof GUIPrivate) {
+            dealWithScrollInv(event);
+        } else if (currentHolder instanceof GUIPublicEdit) {
+            dealWithEditInv(event);
+        } else if (currentHolder instanceof GUIPrivateEdit) {
+            dealWithEditInv(event);
+        } else if (currentHolder instanceof GUIMain) {
             dealWithMainGUI(event);
         }
     }
@@ -63,7 +57,6 @@ public class InventoryInteractListener implements Listener {
         HumanEntity who = event.getWhoClicked();
         // if this wasn't interacted with a player, wtf happened? best to ignore it..
         if (!(who instanceof Player)) {
-            event.setCancelled(true);
             return;
         }
         Player player = (Player) who;
