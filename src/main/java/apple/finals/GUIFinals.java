@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class GUIFinals {
     public static final String ADMIN = "admin" ;
+    public static final String SERVER_NAME = "server";
     public static Set<SpaceInventory> sideGui = new HashSet<SpaceInventory>();
     private static ItemStack itemGray;
     private static ItemStack itemHome;
@@ -48,5 +49,12 @@ public class GUIFinals {
         sideGui.add(new SpaceInventory(16, false, new ItemStack(itemGray)));
         sideGui.add(new SpaceInventory(17, false, new ItemStack(itemGray)));
         sideGui.add(new SpaceInventory(8, false, itemHome));
+    }
+    public static boolean containsItemInSideGUI(ItemStack item){
+        for(SpaceInventory space:sideGui){
+            if (space.getItem().equals(item)){
+                return true;
+            }
+        }return false;
     }
 }

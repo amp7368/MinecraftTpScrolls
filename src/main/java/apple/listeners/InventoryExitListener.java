@@ -2,6 +2,7 @@ package apple.listeners;
 
 import apple.EditExit;
 import apple.ScrollInventories;
+import apple.finals.GUIFinals;
 import apple.guiTypes.GUIPrivate;
 import apple.guiTypes.GUIPrivateEdit;
 import apple.guiTypes.GUIPublicEdit;
@@ -33,7 +34,7 @@ public class InventoryExitListener implements Listener {
             // remove the inventory from ScrollInventories to save space
             ScrollInventories.scrollInvEditIndividual.popKey(uuid);
         } else if (holder instanceof GUIPublicEdit) {
-            EditExit.editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL, "server");
+            EditExit.editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL, GUIFinals.SERVER_NAME);
         } else if (holder instanceof GUIPrivate) {
             String uuid = event.getPlayer().getUniqueId().toString();
             // remove the inventory from ScrollInventories to save space

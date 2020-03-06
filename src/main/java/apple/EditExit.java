@@ -1,5 +1,6 @@
 package apple;
 
+import apple.finals.GUIFinals;
 import apple.finals.MessageFinals;
 import apple.finals.YMLNavigate;
 import org.bukkit.Material;
@@ -44,7 +45,7 @@ public class EditExit {
         int size = inventory.getSize();
         for (int itemI = 0; itemI < size; itemI++) {
             ItemStack item = inventory.getItem(itemI);
-            if (item == null || item.getType() == Material.AIR)
+            if (item == null || item.getType() == Material.AIR || GUIFinals.containsItemInSideGUI(item))
                 continue;
 
             // create the item section in the yml
@@ -83,6 +84,5 @@ public class EditExit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ScrollInventories.update();
     }
 }
