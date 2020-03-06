@@ -44,7 +44,8 @@ public class InventoryInteractListener implements Listener {
                 ItemMeta im = currentItem.getItemMeta();
                 if (im != null) {
                     String localName = im.getLocalizedName();
-                    GUIActionsFinal.dealWith(localName, event);
+                    if (GUIActionsFinal.dealWith(localName, event))
+                        return;
                 }
             }
         }

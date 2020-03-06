@@ -9,7 +9,7 @@ public class GUIActionsFinal {
     public static final String doNothing = "doNothing";
     public static final String HOME = "home";
 
-    public static void dealWith(String localName, InventoryClickEvent event) {
+    public static boolean dealWith(String localName, InventoryClickEvent event) {
         if (localName.equals(GUIActionsFinal.HOME)) {
             HumanEntity who = event.getWhoClicked();
             if ((who instanceof Player)) {
@@ -17,6 +17,8 @@ public class GUIActionsFinal {
                 player.closeInventory();
                 GUIOpen.openMainGUI(player);
             }
+            return true;
         }
+        return false;
     }
 }
