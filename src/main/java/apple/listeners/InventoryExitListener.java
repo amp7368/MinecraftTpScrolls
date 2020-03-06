@@ -1,6 +1,8 @@
 package apple.listeners;
 
+import apple.EditExit;
 import apple.ScrollInventories;
+import apple.finals.MessageFinals;
 import apple.guiTypes.GUIPrivate;
 import apple.guiTypes.GUIPrivateEdit;
 import apple.guiTypes.GUIPublicEdit;
@@ -40,75 +42,15 @@ public class InventoryExitListener implements Listener {
         // edit if necessary when you exit the inventory
         if (holder instanceof GUIPrivateEdit) {
             String uuid = event.getPlayer().getUniqueId().toString();
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + "." + uuid, event.getPlayer().getName());
+            EditExit.editAll(event.getInventory(), YMLNavigate.INVENTORY_PRIVATE + "." + uuid, event.getPlayer().getName());
             // remove the inventory from ScrollInventories to save space
             ScrollInventories.scrollInvEditIndividual.popKey(uuid);
         } else if (holder instanceof GUIPublicEdit) {
-            editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL, "server");
+            EditExit.editAll(event.getInventory(), YMLNavigate.INVENTORY_ALL, "server");
         } else if (holder instanceof GUIPrivate) {
             String uuid = event.getPlayer().getUniqueId().toString();
             // remove the inventory from ScrollInventories to save space
             ScrollInventories.scrollInvIndividual.popKey(uuid);
         }
-    }
-
-    public void editAll(Inventory inventory, String invName, String playerName) {
-        // get the yml for the contents of the inventory
-        File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
-        // make sure configInv is not null
-        if (configInv == null)
-            return;
-        System.out.println("[scrolls] the invName is " + invName);
-        // remove the inventory___Section
-        configInv.set(invName, null);
-
-        // create the configInv___
-        ConfigurationSection configInvName = configInv.createSection(invName);
-        configInvName.set(YMLNavigate.PLAYER_NAME, playerName);
-        int size = inventory.getSize();
-        for (int itemI = 0; itemI < size; itemI++) {
-            ItemStack item = inventory.getItem(itemI);
-            if (item == null || item.getType() == Material.AIR)
-                continue;
-
-            // create the item section in the yml
-            configInvName.createSection(String.format(YMLNavigate.ITEM + "%d", itemI));
-            ConfigurationSection configInvAllItem = configInvName.getConfigurationSection(String.format(YMLNavigate.ITEM + "%d", itemI));
-            if (configInvAllItem == null)
-                continue;
-
-            // set the item to what it is
-            configInvAllItem.set(YMLNavigate.MATERIAL, item.getType().toString());
-            ItemMeta im = item.getItemMeta();
-            if (im != null)
-                configInvAllItem.set(YMLNavigate.NAME, im.getDisplayName());
-
-            configInvAllItem.createSection(YMLNavigate.LORE);
-            ConfigurationSection configInvAllItemLore = configInvAllItem.getConfigurationSection(YMLNavigate.LORE);
-            ItemMeta itemMeta = item.getItemMeta();
-            if (itemMeta == null)
-                continue;
-            List<String> itemLore = itemMeta.getLore();
-            if (itemLore == null)
-                continue;
-            if (configInvAllItemLore == null)
-                continue;
-
-            // create the lore section in the yml
-            int i = 1;
-            for (String l : itemLore) {
-                configInvAllItemLore.createSection(String.format(YMLNavigate.LINE + "%d", i));
-                configInvAllItemLore.set(String.format(YMLNavigate.LINE + "%d", i++), l);
-            }
-        }
-
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ScrollInventories.update();
     }
 }

@@ -37,7 +37,12 @@ public class InventoryInteractListener implements Listener {
         // deal with buttons on the inventory
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
-            if (!((GUI) holder).getSpcae(event.getRawSlot()).editable)
+            int rawSlot = event.getRawSlot();
+            if (rawSlot >= holder.getInventory().getSize()) {
+                System.err.println(String.format("[ScrollsTp] %s tried to access the %d slot of the GUI", event.getWhoClicked().getName(), rawSlot));
+                return;
+            }
+            if (!((GUI) holder).getSpace(event.getRawSlot()).editable)
                 event.setCancelled(true);
             ItemStack currentItem = event.getCurrentItem();
             if (currentItem != null) {

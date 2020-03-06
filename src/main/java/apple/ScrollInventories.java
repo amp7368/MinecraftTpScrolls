@@ -2,6 +2,7 @@ package apple;
 
 import apple.guiTypes.*;
 import apple.finals.MessageFinals;
+import apple.listeners.InventoryExitListener;
 import apple.utils.OneToOneMap;
 import apple.utils.YMLNavigate;
 import org.bukkit.Material;
@@ -52,6 +53,12 @@ public class ScrollInventories {
         }
         invFromConfig(configInvAll, scrollInvAll);
         invFromConfig(configInvAll, scrollInvAllEdit);
+        if (scrollInvAll.getHolder() instanceof GUI) {
+            ((GUI) scrollInvAll.getHolder()).addHomeGUI();
+        }
+        if (scrollInvAllEdit.getHolder() instanceof GUI) {
+            ((GUI) scrollInvAllEdit.getHolder()).addHomeGUI();
+        }
     }
 
     private static Inventory initializeMainGUI(boolean isAdmin) {
@@ -120,10 +127,19 @@ public class ScrollInventories {
 
     public static Inventory open(Player player, boolean isEditable) throws Exception {
         Inventory scrollInvPrivate;
-        if (isEditable)
+        if (isEditable) {
             scrollInvPrivate = GUIPrivateEdit.makeGUIPrivateEdit();
-        else
+            InventoryHolder holder = scrollInvPrivate.getHolder();
+            if (holder instanceof GUI) {
+                ((GUI) scrollInvPrivate.getHolder()).addHomeGUI();
+            }
+        } else {
             scrollInvPrivate = GUIPrivate.makeGUIPrivate();
+            InventoryHolder holder = scrollInvPrivate.getHolder();
+            if (holder instanceof GUI) {
+                ((GUI) scrollInvPrivate.getHolder()).addHomeGUI();
+            }
+        }
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
@@ -132,7 +148,8 @@ public class ScrollInventories {
         }
         ConfigurationSection configInvPriv = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
         if (configInvPriv == null) {
-            throw new Exception("[ScrollsTp] Error getting the private inventory from the yml..");
+            EditExit.editAll(scrollInvPrivate, player.getUniqueId().toString(), player.getName());
+            return scrollInvPrivate;
         }
         ConfigurationSection configInvPrivPlay = configInvPriv.getConfigurationSection(player.getUniqueId().toString());
         if (configInvPrivPlay != null) {

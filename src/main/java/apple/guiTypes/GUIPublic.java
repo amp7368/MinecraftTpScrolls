@@ -9,7 +9,7 @@ public class GUIPublic extends GUI {
     }
 
     public static Inventory makeGUIPublic() {
-        GUI gui = new GUIPublic().addHomeGUI();
+        GUI gui = new GUIPublic();
         return gui.getInventory();
     }
 }

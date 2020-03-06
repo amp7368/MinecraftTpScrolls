@@ -34,7 +34,7 @@ public class GUI implements InventoryHolder {
         inventory = Bukkit.createInventory(this, size, name);
     }
 
-    public Space getSpcae(int i) {
+    public Space getSpace(int i) {
         return spaces.get(i);
     }
 

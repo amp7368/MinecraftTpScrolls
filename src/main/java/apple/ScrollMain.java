@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ScrollMain extends JavaPlugin {
     @Override
     public void onEnable() {
+        new EditExit(this);
         new GUIActionsFinal();
         new GUIFinals();
         GUIFinals.initialize();
