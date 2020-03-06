@@ -1,15 +1,14 @@
 package apple.guiTypes;
 
 import apple.utils.GUIFinals;
+import apple.utils.SpaceInventory;
 import org.bukkit.inventory.Inventory;
 
 public class GUIPrivateEdit extends GUI {
     public GUIPrivateEdit(int size) {
         super(size, "GUI Private Editable");
-        for (int i = 0; i < super.getSize(); i++) {
-            if (!GUIFinals.sideGui.contains(i)) {
-                super.set(i, true);
-            }
+        for (int i = 0; i < size; i++) {
+            super.set(i, true);
         }
     }
 

@@ -1,5 +1,7 @@
 package apple.guiTypes;
 
+import apple.utils.GUIFinals;
+import apple.utils.SpaceInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -42,5 +44,14 @@ public class GUI implements InventoryHolder {
 
     protected int getSize() {
         return spaces.size();
+    }
+
+    public GUI addHomeGUI() {
+        for (SpaceInventory space : GUIFinals.sideGui) {
+            int index = space.getIndex();
+            inventory.setItem(index, space.getItem());
+            spaces.get(index).editable = space.isEditable();
+        }
+        return this;
     }
 }

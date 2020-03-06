@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -144,6 +145,9 @@ public class ScrollInventories {
         } else {
             scrollInvIndividual.put(player.getUniqueId().toString(), scrollInvPrivate);
         }
+        InventoryHolder holder = scrollInvPrivate.getHolder();
+        if (holder instanceof GUI)
+            ((GUI) holder).addHomeGUI();
         return scrollInvPrivate;
     }
 }

@@ -47,10 +47,12 @@ public class InventoryInteractListener implements Listener {
     }
 
     private void dealWithEditInv(InventoryClickEvent event) {
-        // if the interaction is in the side gui, ignore it
-        if (GUIFinals.sideGui.contains(event.getRawSlot())) {
-            event.setCancelled(true);
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof GUI) {
+            if (!((GUI) holder).getSpcae(event.getRawSlot()).editable)
+                event.setCancelled(true);
         }
+        // otherwise wtf happened?
     }
 
     private void dealWithMainGUI(InventoryClickEvent event) {

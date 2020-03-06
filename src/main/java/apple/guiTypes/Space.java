@@ -1,7 +1,7 @@
 package apple.guiTypes;
 
 public class Space {
-    boolean editable;
+    public boolean editable;
     protected Space(boolean editable){
         this.editable = editable;
     }
