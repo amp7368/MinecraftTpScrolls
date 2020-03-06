@@ -5,11 +5,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryChest implements InventoryHolder {
+public class InventoryHolderDouble implements org.bukkit.inventory.InventoryHolder {
     private final Inventory inventory;
 
-    public InventoryChest(int size, String name) {
-        inventory = Bukkit.createInventory(null, size, name);
+    public InventoryHolderDouble(int size, String name) {
+        inventory = Bukkit.createInventory(this, size, name);
     }
 
     @Override

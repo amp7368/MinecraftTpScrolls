@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -26,16 +27,76 @@ public class InventoryInteractListener implements Listener {
 
     @EventHandler
     public void inventoryEvent(InventoryClickEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
-        if (holder == null)
+        InventoryHolder currentHolder = event.getInventory().getHolder();
+        if (currentHolder == null)
             return;
         // if this isn't all inventory, I dont care
-        if (holder == ScrollInventories.scrollInvAll.getHolder()) {
-            dealWithAllInv(event);
+        if (ScrollInventories.scrollInvAll.getHolder() == currentHolder) {
+            dealWithScrollInv(event);
+        }
+        for (Inventory inv : ScrollInventories.scrollInvIndividual.getValues()) {
+            if (inv.getHolder() == currentHolder) {
+                dealWithScrollInv(event);
+                break;
+            }
+        }
+        if (currentHolder == ScrollInventories.MainGUI.getHolder()) {
+            dealWithMainGUI(event);
         }
     }
 
-    public void dealWithAllInv(InventoryClickEvent event) {
+    private void dealWithMainGUI(InventoryClickEvent event) {
+        HumanEntity who = event.getWhoClicked();
+        // if this wasn't interacted with a player, wtf happened? best to ignore it..
+        if (!(who instanceof Player)) {
+            event.setCancelled(true);
+            return;
+        }
+        Player player = (Player) who;
+
+        // don't treat this as a normal inv
+        event.setCancelled(true);
+
+        // Don't let the player use numbers to get stuff.
+        if (event.getClick().equals(ClickType.NUMBER_KEY)) {
+            return;
+        }
+        ItemStack clickedItem = event.getCurrentItem();
+        // verify current item is not null
+        if (clickedItem == null || clickedItem.getType() == Material.AIR)
+            return;
+        switch (clickedItem.getType()) {
+            case RED_TERRACOTTA: {
+                try {
+                    Inventory inv = ScrollInventories.open(player, false);
+                    player.openInventory(inv);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case RED_GLAZED_TERRACOTTA: {
+                try {
+                    Inventory inv = ScrollInventories.open(player, true);
+                    player.openInventory(inv);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case GREEN_TERRACOTTA: {
+                player.openInventory(ScrollInventories.scrollInvAll);
+                break;
+            }
+            case GREEN_GLAZED_TERRACOTTA: {
+                player.openInventory(ScrollInventories.scrollInvAllEdit);
+
+                break;
+            }
+        }
+    }
+
+    public void dealWithScrollInv(InventoryClickEvent event) {
         HumanEntity who = event.getWhoClicked();
         // if this wasn't interacted with a player, wtf happened? best to ignore it..
         if (!(who instanceof Player)) {

@@ -1,13 +1,13 @@
 package apple;
 
-import apple.listeners.InventoryChest;
+import apple.listeners.InventoryHolderDouble;
+import apple.utils.MessageFinals;
 import apple.utils.OneToOneMap;
 import apple.utils.YMLNavigate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,13 +16,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ScrollInventories {
 
     public static Inventory scrollInvAll;
     public static Inventory scrollInvAllEdit;
+    public static Inventory MainGUI;
     public static OneToOneMap<String, Inventory> scrollInvIndividual = new OneToOneMap<String, Inventory>();
     public static OneToOneMap<String, Inventory> scrollInvEditIndividual = new OneToOneMap<String, Inventory>();
     private static JavaPlugin plugin;
@@ -33,8 +33,9 @@ public class ScrollInventories {
     }
 
     public static void update() {
-        scrollInvAll = Bukkit.createInventory(new InventoryChest(54, "Scrolls"), 54, "PublicScrolls");
-        scrollInvAllEdit = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
+        scrollInvAll = Bukkit.createInventory(new InventoryHolderDouble(54, "Scrolls"), 54, "PublicScrolls");
+        scrollInvAllEdit = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsEdit"), 54, "ScrollsEdit (changes the public scroll list)");
+        MainGUI = initializeMainGUI();
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
@@ -44,11 +45,26 @@ public class ScrollInventories {
         }
         ConfigurationSection configInvAll = configInv.getConfigurationSection(YMLNavigate.INVENTORY_ALL);
         if (configInvAll == null) {
-            System.err.println("Error getting the all inventory from the yml..");
+            System.err.println(MessageFinals.ERROR_ALL_INVENTORY_GET);
             return;
         }
         invFromConfig(configInvAll, scrollInvAll);
         invFromConfig(configInvAll, scrollInvAllEdit);
+    }
+
+    private static Inventory initializeMainGUI() {
+        Inventory gui = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsGUI"), 54, "Scrolls Main GUI");
+        ItemStack privateItem = new ItemStack(Material.RED_TERRACOTTA);
+        ItemStack privateItemEdit = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
+        ItemStack publicItem = new ItemStack(Material.GREEN_TERRACOTTA);
+        ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
+
+        gui.setItem(0, privateItem);
+        gui.setItem(1, privateItemEdit);
+        gui.setItem(2, publicItem);
+        gui.setItem(3, publicItemEdit);
+
+        return gui;
     }
 
     private static void invFromConfig(ConfigurationSection configMain, Inventory inv) {
@@ -112,7 +128,7 @@ public class ScrollInventories {
     }
 
     public static Inventory open(Player player, boolean isEditable) throws Exception {
-        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryChest(54, "ScrollsEdit"), 54, "ScrollsPrivate");
+        Inventory scrollInvPrivate = Bukkit.createInventory(new InventoryHolderDouble(54, "ScrollsEdit"), 54, "ScrollsPrivate");
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
