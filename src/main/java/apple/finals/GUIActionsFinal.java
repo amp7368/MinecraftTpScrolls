@@ -1,6 +1,6 @@
 package apple.finals;
 
-import apple.utils.GUIOpen;
+import apple.utils.GUIOpenMain;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -15,7 +15,7 @@ public class GUIActionsFinal {
             if ((who instanceof Player)) {
                 Player player = (Player) who;
                 player.closeInventory();
-                GUIOpen.openMainGUI(player);
+                GUIOpenMain.openMainGUI(player);
             }
             return true;
         }

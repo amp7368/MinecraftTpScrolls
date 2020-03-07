@@ -38,12 +38,27 @@ public class GUIMain extends GUI {
                 im.setDisplayName("Edit Public Scrolls (CAUTION!!!)");
                 publicItemEdit.setItemMeta(im);
             }
-            gui.setItem(1, publicItemEdit);
+            gui.setItem(6, publicItemEdit);
+        }
+        ItemStack quickItem = new ItemStack(Material.BLUE_TERRACOTTA);
+        im = quickItem.getItemMeta();
+        if (im != null) {
+            im.setDisplayName("QuickTp Scrolls");
+            quickItem.setItemMeta(im);
+        }
+        ItemStack quickItemEdit = new ItemStack(Material.BLUE_GLAZED_TERRACOTTA);
+        im = quickItemEdit.getItemMeta();
+        if (im != null) {
+            im.setDisplayName("Edit QuickTp Scrolls");
+            quickItemEdit.setItemMeta(im);
         }
 
-        gui.setItem(8, privateItemEdit);
-        gui.setItem(4, privateItem);
         gui.setItem(0, publicItem);
+        gui.setItem(1, quickItem);
+        gui.setItem(2, privateItem);
+
+        gui.setItem(7, quickItemEdit);
+        gui.setItem(8, privateItemEdit);
         return gui;
     }
 }

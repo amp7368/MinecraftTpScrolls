@@ -22,7 +22,7 @@ public class EditExit {
         plugin = pl;
     }
 
-    public static void editAll(Inventory inventory, String invName, String playerName) {
+    public static void updateConfig(Inventory inventory, String invName, String playerName) {
         // get the yml for the contents of the inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);

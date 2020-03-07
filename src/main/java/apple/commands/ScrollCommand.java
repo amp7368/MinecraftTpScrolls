@@ -2,7 +2,7 @@ package apple.commands;
 
 import apple.ScrollInventories;
 import apple.ScrollMain;
-import apple.utils.GUIOpen;
+import apple.utils.GUIOpenMain;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,6 +40,6 @@ public class ScrollCommand implements CommandExecutor {
             return false;
         }
 
-        return GUIOpen.openMainGUI(player);
+        return GUIOpenMain.openMainGUI(player);
     }
 }

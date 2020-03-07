@@ -26,6 +26,8 @@ public class ScrollInventories {
     public static Inventory MainGUIOp;
     public static OneToOneMap<String, Inventory> scrollInvIndividual = new OneToOneMap<String, Inventory>();
     public static OneToOneMap<String, Inventory> scrollInvEditIndividual = new OneToOneMap<String, Inventory>();
+    public static OneToOneMap<String, Inventory> scrollInvQuick = new OneToOneMap<String, Inventory>();
+    public static OneToOneMap<String, Inventory> scrollInvEditQuick = new OneToOneMap<String, Inventory>();
     private static JavaPlugin plugin;
 
     public ScrollInventories(JavaPlugin pl) {
@@ -69,7 +71,7 @@ public class ScrollInventories {
         ConfigurationSection configInvAllItem = configMain.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, i));
         assert configInvAllItem != null;
         // get all the items in inv all
-        while (i < 54) {
+        while (i < inv.getSize()) {
             ItemStack item = getItemFromConfig(configInvAllItem);
             inv.setItem(i, item);
             configInvAllItem = configMain.getConfigurationSection(String.format("%s%d", YMLNavigate.ITEM, ++i));
@@ -98,7 +100,7 @@ public class ScrollInventories {
             }
         }
 
-        List<String> lore = new ArrayList<String>(4);
+        List<String> lore = new ArrayList<>(4);
         ConfigurationSection configLore = config.getConfigurationSection(YMLNavigate.LORE);
 
         if (configLore == null) {
@@ -124,46 +126,72 @@ public class ScrollInventories {
         return item;
     }
 
-    public static Inventory open(Player player, boolean isEditable) throws Exception {
-        Inventory scrollInvPrivate;
-        if (isEditable) {
-            scrollInvPrivate = GUIPrivateEdit.makeGUIPrivateEdit();
-            InventoryHolder holder = scrollInvPrivate.getHolder();
-            if (holder instanceof GUI) {
-                ((GUI) scrollInvPrivate.getHolder()).addHomeGUI();
+    public static Inventory openPersonalInv(String inventoryType, Player player, boolean isEditable) throws Exception {
+        Inventory scrollInvPersonal;
+        if (inventoryType.equals(YMLNavigate.INVENTORY_QUICK)) {
+            if (isEditable) {
+                scrollInvPersonal = GUIQuickEdit.makeGUIQuickEdit();
+                InventoryHolder holder = scrollInvPersonal.getHolder();
+                if (holder instanceof GUI) {
+                    ((GUI) scrollInvPersonal.getHolder()).addHomeGUI();
+                }
+            } else {
+                scrollInvPersonal = GUIQuick.makeGUIQuick();
+                InventoryHolder holder = scrollInvPersonal.getHolder();
+                if (holder instanceof GUI) {
+                    ((GUI) scrollInvPersonal.getHolder()).addHomeGUI();
+                }
             }
         } else {
-            scrollInvPrivate = GUIPrivate.makeGUIPrivate();
-            InventoryHolder holder = scrollInvPrivate.getHolder();
-            if (holder instanceof GUI) {
-                ((GUI) scrollInvPrivate.getHolder()).addHomeGUI();
+            if (isEditable) {
+                scrollInvPersonal = GUIPrivateEdit.makeGUIPrivateEdit();
+                InventoryHolder holder = scrollInvPersonal.getHolder();
+                if (holder instanceof GUI) {
+                    ((GUI) scrollInvPersonal.getHolder()).addHomeGUI();
+                }
+            } else {
+                scrollInvPersonal = GUIPrivate.makeGUIPrivate();
+                InventoryHolder holder = scrollInvPersonal.getHolder();
+                if (holder instanceof GUI) {
+                    ((GUI) scrollInvPersonal.getHolder()).addHomeGUI();
+                }
             }
         }
+
+        // read the yml file for the current inventory
         File file = new File(plugin.getDataFolder() + File.separator + "scrollInv" + File.separator + "scrollInv.yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         ConfigurationSection configInv = config.getConfigurationSection(YMLNavigate.INVENTORY);
         if (configInv == null) {
             throw new Exception(MessageFinals.ERROR_ANY_INVENTORY_GET);
         }
-        ConfigurationSection configInvPriv = configInv.getConfigurationSection(YMLNavigate.INVENTORY_PRIVATE);
+        ConfigurationSection configInvPriv = configInv.getConfigurationSection(inventoryType);
         if (configInvPriv == null) {
-            EditExit.editAll(scrollInvPrivate, player.getUniqueId().toString(), player.getName());
-            return scrollInvPrivate;
+            EditExit.updateConfig(scrollInvPersonal, inventoryType + "." + player.getUniqueId().toString(), player.getName());
+            return scrollInvPersonal;
         }
         ConfigurationSection configInvPrivPlay = configInvPriv.getConfigurationSection(player.getUniqueId().toString());
         if (configInvPrivPlay != null) {
-            invFromConfig(configInvPrivPlay, scrollInvPrivate);
+            invFromConfig(configInvPrivPlay, scrollInvPersonal);
         }
 
         // put the inventory in the correct currently opened inventories
-        if (isEditable) {
-            scrollInvEditIndividual.put(player.getUniqueId().toString(), scrollInvPrivate);
+        if (inventoryType.equals(YMLNavigate.INVENTORY_QUICK)) {
+            if (isEditable) {
+                scrollInvEditQuick.put(player.getUniqueId().toString(), scrollInvPersonal);
+            } else {
+                scrollInvQuick.put(player.getUniqueId().toString(), scrollInvPersonal);
+            }
         } else {
-            scrollInvIndividual.put(player.getUniqueId().toString(), scrollInvPrivate);
+            if (isEditable) {
+                scrollInvEditIndividual.put(player.getUniqueId().toString(), scrollInvPersonal);
+            } else {
+                scrollInvIndividual.put(player.getUniqueId().toString(), scrollInvPersonal);
+            }
         }
-        InventoryHolder holder = scrollInvPrivate.getHolder();
+        InventoryHolder holder = scrollInvPersonal.getHolder();
         if (holder instanceof GUI)
             ((GUI) holder).addHomeGUI();
-        return scrollInvPrivate;
+        return scrollInvPersonal;
     }
 }

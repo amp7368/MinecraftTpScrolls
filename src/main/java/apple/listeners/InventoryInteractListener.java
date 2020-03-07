@@ -1,9 +1,11 @@
 package apple.listeners;
 
 import apple.ScrollInventories;
+import apple.finals.YMLNavigate;
 import apple.guiTypes.*;
 import apple.finals.GUIActionsFinal;
 import apple.finals.MessageFinals;
+import apple.utils.Teleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -13,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -31,32 +32,46 @@ public class InventoryInteractListener implements Listener {
     @EventHandler
     public void inventoryEvent(InventoryClickEvent event) {
         InventoryHolder currentHolder = event.getInventory().getHolder();
-        if (currentHolder == null)
+        if (!(currentHolder instanceof GUI))
             return;
 
 
         // deal with buttons on the inventory
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
+            // Don't let the player use shift click
             if (event.isShiftClick()) {
                 event.setCancelled(true);
                 return;
             }
-            int rawSlot = event.getRawSlot();
-            if (rawSlot >= event.getInventory().getSize() || rawSlot < 0) {
+            // Don't let the player use numbers to get stuff.
+            if (event.getClick().equals(ClickType.CONTROL_DROP) || event.getClick().equals(ClickType.DOUBLE_CLICK) || event.getClick().equals(ClickType.DROP)) {
+                event.setCancelled(true);
                 return;
             }
-            ItemStack currentItem = event.getCurrentItem();
 
-            if (currentItem != null && ((GUI) holder).getSpace(event.getRawSlot()).editable) {
-                if (currentItem.getType() == Material.PAPER) {
-                    event.setCancelled(true);
-                    return;
-                } else {
-                    event.setCancelled(false);
+            int rawSlot = event.getRawSlot();
+            if (rawSlot >= event.getInventory().getSize() || rawSlot < 0) {
+                // ignore out of bounds
+                return;
+            }
+
+            // get the item in the cursor's hand
+            // if it's paper, then place it
+            ItemStack currentItem = event.getCursor();
+            if (((GUI) holder).getSpace(event.getRawSlot()).editable) {
+                if (currentItem != null) {
+                    if (currentItem.getType() == Material.PAPER) {
+                        event.setCancelled(false);
+                    } else {
+                        event.setCancelled(true);
+                        return;
+                    }
                 }
             } else
                 event.setCancelled(true);
+
+            currentItem = event.getCurrentItem();
             if (currentItem != null) {
                 ItemMeta im = currentItem.getItemMeta();
                 if (im != null) {
@@ -78,10 +93,41 @@ public class InventoryInteractListener implements Listener {
                 dealWithEditInv(event);
             } else if (currentHolder instanceof GUIMain) {
                 dealWithMainGUI(event);
+            } else if (currentHolder instanceof GUIQuickEdit) {
+                dealWithEditInv(event);
+            } else if (currentHolder instanceof GUIQuick) {
+                dealWithQuickInv(event);
             }
         }
 
 
+    }
+
+    private void dealWithQuickInv(InventoryClickEvent event) {
+        HumanEntity who = event.getWhoClicked();
+        // if this wasn't interacted with a player, wtf happened? best to ignore it..
+        if (!(who instanceof Player)) {
+            event.setCancelled(true);
+            return;
+        }
+        Player player = (Player) who;
+
+        // don't treat this as a normal inv
+        event.setCancelled(true);
+
+        ItemStack clickedItem = event.getCurrentItem();
+        // verify current item is not null
+        if (clickedItem == null || clickedItem.getType() == Material.AIR)
+            return;
+
+        // get info about the clicked item
+        ItemMeta clickedMeta = clickedItem.getItemMeta();
+        if (clickedMeta == null) {
+            return;
+        }
+        List<String> clickedLore = clickedMeta.getLore();
+        if (clickedLore != null)
+            Teleport.teleportScroll(clickedLore, player);
     }
 
     private void dealWithEditInv(InventoryClickEvent event) {
@@ -110,7 +156,7 @@ public class InventoryInteractListener implements Listener {
         switch (clickedItem.getType()) {
             case RED_TERRACOTTA: {
                 try {
-                    Inventory inv = ScrollInventories.open(player, false);
+                    Inventory inv = ScrollInventories.openPersonalInv(YMLNavigate.INVENTORY_PRIVATE, player, false);
                     player.openInventory(inv);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -119,7 +165,26 @@ public class InventoryInteractListener implements Listener {
             }
             case RED_GLAZED_TERRACOTTA: {
                 try {
-                    Inventory inv = ScrollInventories.open(player, true);
+                    Inventory inv = ScrollInventories.openPersonalInv(YMLNavigate.INVENTORY_PRIVATE, player, true);
+                    player.openInventory(inv);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case BLUE_TERRACOTTA: {
+                try {
+                    Inventory inv = ScrollInventories.openPersonalInv(YMLNavigate.INVENTORY_QUICK, player, false);
+                    player.openInventory(inv);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+
+            case BLUE_GLAZED_TERRACOTTA: {
+                try {
+                    Inventory inv = ScrollInventories.openPersonalInv(YMLNavigate.INVENTORY_QUICK, player, true);
                     player.openInventory(inv);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -152,10 +217,6 @@ public class InventoryInteractListener implements Listener {
         // don't treat this as a normal inv
         event.setCancelled(true);
 
-        // Don't let the player use numbers to get stuff.
-        if (event.getClick().equals(ClickType.NUMBER_KEY)) {
-            return;
-        }
 
         ItemStack clickedItem = event.getCurrentItem();
         // verify current item is not null

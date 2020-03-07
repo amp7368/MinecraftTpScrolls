@@ -9,10 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
-public class GUIOpen {
+public class GUIOpenMain {
     private static JavaPlugin plugin;
 
-    public GUIOpen(JavaPlugin pl) {
+    public GUIOpenMain(JavaPlugin pl) {
         plugin = pl;
     }
 
