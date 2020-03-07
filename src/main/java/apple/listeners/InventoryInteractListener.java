@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class InventoryInteractListener implements Listener {
     }
 
     @EventHandler
-    public void inventoryEvent(InventoryClickEvent event) {
+    public void inventoryEvent(InventoryInteractEvent event) {
         InventoryHolder currentHolder = event.getInventory().getHolder();
         if (currentHolder == null)
             return;
@@ -37,40 +38,47 @@ public class InventoryInteractListener implements Listener {
         // deal with buttons on the inventory
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
-            int rawSlot = event.getRawSlot();
-            if (rawSlot >= holder.getInventory().getSize() || rawSlot<0) {
-                return;
-            }
-            if (!((GUI) holder).getSpace(event.getRawSlot()).editable)
-                event.setCancelled(true);
-            ItemStack currentItem = event.getCurrentItem();
-            if (currentItem != null) {
-                ItemMeta im = currentItem.getItemMeta();
-                if (im != null) {
-                    String localName = im.getLocalizedName();
-                    if (GUIActionsFinal.dealWith(localName, event))
-                        return;
+            event.setCancelled(true);
+            if (event instanceof InventoryClickEvent) {
+                InventoryClickEvent clickEvent = (InventoryClickEvent) event;
+                int rawSlot = clickEvent.getRawSlot();
+                if (rawSlot >= holder.getInventory().getSize() || rawSlot < 0) {
+                    return;
+                }
+                if (!((GUI) holder).getSpace(clickEvent.getRawSlot()).editable)
+                    event.setCancelled(true);
+                else
+                    event.setCancelled(false);
+                ItemStack currentItem = clickEvent.getCurrentItem();
+                if (currentItem != null) {
+                    ItemMeta im = currentItem.getItemMeta();
+                    if (im != null) {
+                        String localName = im.getLocalizedName();
+                        if (GUIActionsFinal.dealWith(localName, clickEvent))
+                            return;
+                    }
+                }
+                // associate the click with the right type of inventory
+                if (currentHolder instanceof GUIPublic) {
+                    dealWithScrollInv(clickEvent);
+                } else if (currentHolder instanceof GUIPrivate) {
+                    dealWithScrollInv(clickEvent);
+                } else if (currentHolder instanceof GUIPublicEdit) {
+                    dealWithEditInv(clickEvent);
+                } else if (currentHolder instanceof GUIPrivateEdit) {
+                    dealWithEditInv(clickEvent);
+                } else if (currentHolder instanceof GUIMain) {
+                    dealWithMainGUI(clickEvent);
                 }
             }
         }
 
 
-        // associate the click with the right type of inventory
-        if (currentHolder instanceof GUIPublic) {
-            dealWithScrollInv(event);
-        } else if (currentHolder instanceof GUIPrivate) {
-            dealWithScrollInv(event);
-        } else if (currentHolder instanceof GUIPublicEdit) {
-            dealWithEditInv(event);
-        } else if (currentHolder instanceof GUIPrivateEdit) {
-            dealWithEditInv(event);
-        } else if (currentHolder instanceof GUIMain) {
-            dealWithMainGUI(event);
-        }
     }
 
     private void dealWithEditInv(InventoryClickEvent event) {
     }
+
 
     private void dealWithMainGUI(InventoryClickEvent event) {
         HumanEntity who = event.getWhoClicked();
@@ -124,7 +132,7 @@ public class InventoryInteractListener implements Listener {
         }
     }
 
-    public void dealWithScrollInv(InventoryClickEvent event) {
+    private void dealWithScrollInv(InventoryClickEvent event) {
         HumanEntity who = event.getWhoClicked();
         // if this wasn't interacted with a player, wtf happened? best to ignore it..
         if (!(who instanceof Player)) {
@@ -162,7 +170,6 @@ public class InventoryInteractListener implements Listener {
             ItemStack item = contents[i];
             if (item == null || item.getAmount() == 0 || item.getType().equals(Material.AIR)) {
                 canAddItem = true;
-                break;
             } else {
                 // get info about item
                 ItemMeta itemMeta = item.getItemMeta();
@@ -178,6 +185,7 @@ public class InventoryInteractListener implements Listener {
                         return;
                     }
                     player.sendMessage(MessageFinals.GET_ALREADY_HAVE);
+                    canAddItem = false;
                     break;
                 }
             }
