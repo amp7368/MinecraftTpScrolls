@@ -29,7 +29,7 @@ public class InventoryInteractListener implements Listener {
     }
 
     @EventHandler
-    public void inventoryEvent(InventoryInteractEvent event) {
+    public void inventoryEvent(InventoryClickEvent event) {
         InventoryHolder currentHolder = event.getInventory().getHolder();
         if (currentHolder == null)
             return;
@@ -38,38 +38,40 @@ public class InventoryInteractListener implements Listener {
         // deal with buttons on the inventory
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
-            event.setCancelled(true);
-            if (event instanceof InventoryClickEvent) {
-                InventoryClickEvent clickEvent = (InventoryClickEvent) event;
-                int rawSlot = clickEvent.getRawSlot();
-                if (rawSlot >= holder.getInventory().getSize() || rawSlot < 0) {
-                    return;
-                }
-                if (!((GUI) holder).getSpace(clickEvent.getRawSlot()).editable)
-                    event.setCancelled(true);
-                else
-                    event.setCancelled(false);
-                ItemStack currentItem = clickEvent.getCurrentItem();
-                if (currentItem != null) {
-                    ItemMeta im = currentItem.getItemMeta();
-                    if (im != null) {
-                        String localName = im.getLocalizedName();
-                        if (GUIActionsFinal.dealWith(localName, clickEvent))
-                            return;
+            if (event.isShiftClick()){
+                event.setCancelled(true);
+                return;
+            }
+            int rawSlot = event.getRawSlot();
+            if (rawSlot >= event.getInventory().getSize() || rawSlot < 0) {
+                return;
+            }
+            if (!((GUI) holder).getSpace(event.getRawSlot()).editable)
+                event.setCancelled(true);
+            else
+                event.setCancelled(false);
+            ItemStack currentItem = event.getCurrentItem();
+            if (currentItem != null) {
+                ItemMeta im = currentItem.getItemMeta();
+                if (im != null) {
+                    String localName = im.getLocalizedName();
+                    if (GUIActionsFinal.dealWith(localName, event)) {
+                        return;
                     }
                 }
-                // associate the click with the right type of inventory
-                if (currentHolder instanceof GUIPublic) {
-                    dealWithScrollInv(clickEvent);
-                } else if (currentHolder instanceof GUIPrivate) {
-                    dealWithScrollInv(clickEvent);
-                } else if (currentHolder instanceof GUIPublicEdit) {
-                    dealWithEditInv(clickEvent);
-                } else if (currentHolder instanceof GUIPrivateEdit) {
-                    dealWithEditInv(clickEvent);
-                } else if (currentHolder instanceof GUIMain) {
-                    dealWithMainGUI(clickEvent);
-                }
+            }
+
+            // associate the click with the right type of inventory
+            if (currentHolder instanceof GUIPublic) {
+                dealWithScrollInv(event);
+            } else if (currentHolder instanceof GUIPrivate) {
+                dealWithScrollInv(event);
+            } else if (currentHolder instanceof GUIPublicEdit) {
+                dealWithEditInv(event);
+            } else if (currentHolder instanceof GUIPrivateEdit) {
+                dealWithEditInv(event);
+            } else if (currentHolder instanceof GUIMain) {
+                dealWithMainGUI(event);
             }
         }
 

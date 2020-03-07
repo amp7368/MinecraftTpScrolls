@@ -29,5 +29,6 @@ public class ScrollMain extends JavaPlugin {
         new InventoryInteractListener(this);
         new ClickListener(this);
         new InventoryExitListener(this);
+        System.out.println("[ScrollsTP] enabled");
     }
 }

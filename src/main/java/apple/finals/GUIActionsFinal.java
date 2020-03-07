@@ -19,6 +19,9 @@ public class GUIActionsFinal {
             }
             return true;
         }
+        if (localName.equals(doNothing)) {
+            return true;
+        }
         return false;
     }
 }
