@@ -38,7 +38,7 @@ public class InventoryInteractListener implements Listener {
         // deal with buttons on the inventory
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof GUI) {
-            if (event.isShiftClick()){
+            if (event.isShiftClick()) {
                 event.setCancelled(true);
                 return;
             }
@@ -46,11 +46,17 @@ public class InventoryInteractListener implements Listener {
             if (rawSlot >= event.getInventory().getSize() || rawSlot < 0) {
                 return;
             }
-            if (!((GUI) holder).getSpace(event.getRawSlot()).editable)
-                event.setCancelled(true);
-            else
-                event.setCancelled(false);
             ItemStack currentItem = event.getCurrentItem();
+
+            if (currentItem != null && ((GUI) holder).getSpace(event.getRawSlot()).editable) {
+                if (currentItem.getType() == Material.PAPER) {
+                    event.setCancelled(true);
+                    return;
+                } else {
+                    event.setCancelled(false);
+                }
+            } else
+                event.setCancelled(true);
             if (currentItem != null) {
                 ItemMeta im = currentItem.getItemMeta();
                 if (im != null) {

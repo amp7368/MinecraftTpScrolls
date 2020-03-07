@@ -1,0 +1,15 @@
+name: ScrollsTp
+version: 1.0
+api-version: 1.14
+author: Apple
+main: apple.ScrollMain
+description: allow the player to teleport using player made paper scrolls
+commands:
+  scroll_create:
+    description: creates a scroll with the players current location
+  scroll_duplicate:
+    description: duplicates whatever scrolls are in the player's hand
+  scroll:
+    description: gets the scroll inventory
+  scroll_help:
+    description: sends a help message to the player about scroll commands
