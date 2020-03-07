@@ -60,7 +60,7 @@ public class InventoryInteractListener implements Listener {
             // if it's paper, then place it
             ItemStack currentItem = event.getCursor();
             if (((GUI) holder).getSpace(event.getRawSlot()).editable) {
-                if (currentItem != null) {
+                if (currentItem != null && currentItem.getType() != Material.AIR) {
                     if (currentItem.getType() == Material.PAPER) {
                         event.setCancelled(false);
                     } else {
