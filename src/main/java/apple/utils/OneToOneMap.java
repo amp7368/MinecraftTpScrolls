@@ -1,7 +1,5 @@
 package apple.utils;
 
-import org.bukkit.inventory.Inventory;
-
 import java.util.ArrayList;
 
 /**

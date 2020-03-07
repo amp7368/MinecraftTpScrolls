@@ -22,7 +22,7 @@ public class GUIMain extends GUI {
         ItemStack privateItemEdit = new ItemStack(Material.RED_GLAZED_TERRACOTTA);
         im = privateItemEdit.getItemMeta();
         if (im != null) {
-            im.setDisplayName("Editing Private Scrolls");
+            im.setDisplayName("Edit Private Scrolls");
             privateItemEdit.setItemMeta(im);
         }
         ItemStack publicItem = new ItemStack(Material.GREEN_TERRACOTTA);
@@ -35,7 +35,7 @@ public class GUIMain extends GUI {
             ItemStack publicItemEdit = new ItemStack(Material.GREEN_GLAZED_TERRACOTTA);
             im = publicItemEdit.getItemMeta();
             if (im != null) {
-                im.setDisplayName("Editing Public Scrolls (CAUTION!!!)");
+                im.setDisplayName("Edit Public Scrolls (CAUTION!!!)");
                 publicItemEdit.setItemMeta(im);
             }
             gui.setItem(1, publicItemEdit);

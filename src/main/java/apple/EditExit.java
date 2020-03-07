@@ -84,5 +84,6 @@ public class EditExit {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ScrollInventories.update();
     }
 }

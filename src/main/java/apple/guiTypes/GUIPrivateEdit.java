@@ -4,7 +4,7 @@ import org.bukkit.inventory.Inventory;
 
 public class GUIPrivateEdit extends GUI {
     public GUIPrivateEdit(int size) {
-        super(size, "GUI Private Editable");
+        super(size, "Edit GUI Private");
         for (int i = 0; i < size; i++) {
             super.set(i, true);
         }
